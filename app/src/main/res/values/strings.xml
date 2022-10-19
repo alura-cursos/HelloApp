@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">HelloApp</string>
+    <string name="title_activity_cadastro_contato">Adicionar contato</string>
+    <string name="title_activity_detalhes_contato">DetalhesContatoActivity</string>
+    <string name="nome">Nome</string>
+    <string name="sobrenome">Sobrenome</string>
+    <string name="telefone">Telefone</string>
+    <string name="salvar">Salvar</string>
+    <string name="link_imagem">Link da imagem</string>
+    <string name="carregar">Carregar</string>
+    <string name="mensagem">Mensagem</string>
+    <string name="ligar">Ligar</string>
+    <string name="informações">Informações</string>
+    <string name="nome_completo">Nome completo</string>
+</resources>
