@@ -1,4 +1,4 @@
-package br.com.alura.helloapp
+package br.com.alura.helloapp.data
 
 data class Contato(
     val id: String,

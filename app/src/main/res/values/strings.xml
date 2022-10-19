@@ -12,4 +12,11 @@
     <string name="ligar">Ligar</string>
     <string name="informações">Informações</string>
     <string name="nome_completo">Nome completo</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="senha">Senha</string>
+    <string name="cadastrar">Cadastrar</string>
+    <string name="usuario">Usuário</string>
+    <string name="entrar">Entrar</string>
+    <string name="criar_nova_conta">Criar conta</string>
+    <string name="criar">Criar</string>
 </resources>

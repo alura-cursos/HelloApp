@@ -15,7 +15,23 @@
         android:theme="@style/Theme.HelloApp"
         tools:targetApi="31">
         <activity
-            android:name=".DetalhesContatoActivity"
+            android:name=".ui.login.LoginActivity"
+            android:exported="true"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.HelloApp">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.details.DetalhesContatoActivity"
             android:exported="false"
             android:label="@string/title_activity_detalhes_contato"
             android:theme="@style/Theme.HelloApp">
@@ -24,7 +40,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".CadastroContatoActivity"
+            android:name=".ui.home.CadastroContatoActivity"
             android:exported="false"
             android:label="@string/title_activity_cadastro_contato"
             android:theme="@style/Theme.HelloApp">
@@ -33,15 +49,10 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.home.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.HelloApp">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
             <meta-data
                 android:name="android.app.lib_name"

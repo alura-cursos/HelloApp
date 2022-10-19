@@ -1,8 +1,7 @@
-package br.com.alura.helloapp
+package br.com.alura.helloapp.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -26,6 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.alura.helloapp.*
+import br.com.alura.helloapp.R
+import br.com.alura.helloapp.data.Contato
+import br.com.alura.helloapp.ui.details.DetalhesContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -33,6 +36,10 @@ import coil.request.ImageRequest
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        // Adicionar campo de data de niver, para ter exemplo de converter com Room
+
         setContent {
             HelloAppTheme {
                 Surface(

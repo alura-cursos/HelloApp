@@ -1,4 +1,4 @@
-package br.com.alura.helloapp
+package br.com.alura.helloapp.ui.home
 
 import android.os.Bundle
 import android.widget.Toast
@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import br.com.alura.helloapp.R
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -214,7 +215,7 @@ fun CarregaFotoDialog(onDismiss: () -> Unit, onConfirmButton: (urlImagem: String
 }
 
 
-@Preview
+
 @Composable
 fun CarregaFotoDialogPrev() {
     CarregaFotoDialog({}, {})
