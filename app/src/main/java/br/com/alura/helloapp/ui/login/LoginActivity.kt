@@ -65,7 +65,7 @@ fun HomeLogin(onClickEntrar: () -> Unit) {
 fun LoginScreen(
     modifier: Modifier = Modifier,
     onClickEntrar: () -> Unit,
-    onClickCadastro: () -> Unit
+    onClickCriar: () -> Unit
 ) {
 
     Column(Modifier.fillMaxSize()) {
@@ -129,7 +129,7 @@ fun LoginScreen(
             ) {
                 Text(text = stringResource(R.string.entrar))
             }
-            TextButton(onClick = onClickCadastro, Modifier.fillMaxWidth()) {
+            TextButton(onClick = onClickCriar, Modifier.fillMaxWidth()) {
                 Text(text = stringResource(R.string.criar_nova_conta))
             }
         }

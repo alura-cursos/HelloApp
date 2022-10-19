@@ -41,7 +41,7 @@ class CadastroContatoActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    CadastroScreen()
+                    CadastroScreen(onClickSalvar = { finish() })
                 }
             }
         }
@@ -49,16 +49,16 @@ class CadastroContatoActivity : ComponentActivity() {
 }
 
 @Composable
-fun CadastroScreen() {
+fun CadastroScreen(onClickSalvar: () -> Unit) {
     Scaffold(
         topBar = { CadastroAppBar() },
     ) { paddingValues ->
-        CadastroContent(Modifier.padding(paddingValues))
+        CadastroContent(Modifier.padding(paddingValues), onClickSalvar = onClickSalvar)
     }
 }
 
 @Composable
-fun CadastroContent(modifier: Modifier = Modifier) {
+fun CadastroContent(modifier: Modifier = Modifier, onClickSalvar: () -> Unit) {
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
 
@@ -85,9 +85,6 @@ fun CadastroContent(modifier: Modifier = Modifier) {
                     .size(180.dp)
                     .clip(CircleShape)
                     .clickable {
-                        Toast
-                            .makeText(context, "Adicionar foto", Toast.LENGTH_SHORT)
-                            .show()
                         showDialog.value = true
                     },
                 model = ImageRequest.Builder(LocalContext.current)
@@ -139,9 +136,11 @@ fun CadastroContent(modifier: Modifier = Modifier) {
             )
 
             Spacer(Modifier.height(16.dp))
-            Button(modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(56.dp), onClick = { /*TODO*/ }) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(56.dp), onClick = onClickSalvar
+            ) {
                 Text(text = stringResource(R.string.salvar))
             }
         }
@@ -215,7 +214,6 @@ fun CarregaFotoDialog(onDismiss: () -> Unit, onConfirmButton: (urlImagem: String
 }
 
 
-
 @Composable
 fun CarregaFotoDialogPrev() {
     CarregaFotoDialog({}, {})
@@ -224,5 +222,5 @@ fun CarregaFotoDialogPrev() {
 @Preview
 @Composable
 fun CadastroScreenPrev() {
-    CadastroScreen()
+    CadastroScreen({})
 }

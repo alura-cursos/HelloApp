@@ -1,8 +1,10 @@
 package br.com.alura.helloapp.ui.details
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import br.com.alura.helloapp.CHAVE_CONTATO_ID
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
+import br.com.alura.helloapp.ui.home.CadastroContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -42,9 +45,12 @@ class DetalhesContatoActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    DetalhesContatoScreen(contatoAtual) {
-                        finish()
-                    }
+                    DetalhesContatoScreen(
+                        contatoAtual,
+                        onBackClick = { finish() },
+                        onEditClick = {
+                            startActivity(Intent(this, CadastroContatoActivity::class.java))
+                        })
                 }
             }
         }
@@ -52,9 +58,9 @@ class DetalhesContatoActivity : ComponentActivity() {
 }
 
 @Composable
-fun DetalhesContatoScreen(contato: Contato, onBackClick: () -> Unit) {
+fun DetalhesContatoScreen(contato: Contato, onBackClick: () -> Unit, onEditClick: () -> Unit) {
     Scaffold(
-        topBar = { DetalhesContatoAppBar(onBackClick = onBackClick) },
+        topBar = { DetalhesContatoAppBar(onBackClick = onBackClick, onEditClick = onEditClick) },
     ) { paddingValues ->
         DetalhesContatoContent(Modifier.padding(paddingValues), contato)
     }
@@ -62,7 +68,7 @@ fun DetalhesContatoScreen(contato: Contato, onBackClick: () -> Unit) {
 
 
 @Composable
-fun DetalhesContatoAppBar(onBackClick: () -> Unit) {
+fun DetalhesContatoAppBar(onBackClick: () -> Unit, onEditClick: () -> Unit) {
     TopAppBar(
         title = { },
         navigationIcon = {
@@ -78,7 +84,7 @@ fun DetalhesContatoAppBar(onBackClick: () -> Unit) {
         },
         actions = {
             IconButton(
-                onClick = { /*TODO*/ }
+                onClick = onEditClick
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
@@ -135,7 +141,8 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
             Column(
                 Modifier
                     .fillMaxHeight()
-                    .weight(1f),
+                    .weight(1f)
+                    .clickable {},
                 horizontalAlignment = CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp, CenterVertically),
             ) {
@@ -152,7 +159,8 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
             Column(
                 Modifier
                     .fillMaxHeight()
-                    .weight(1f),
+                    .weight(1f)
+                    .clickable {},
                 horizontalAlignment = CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp, CenterVertically),
             ) {
@@ -214,5 +222,5 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
 @Preview
 @Composable
 fun DetalhesContatoScreenPrev() {
-    DetalhesContatoScreen(Contato("", "Ana", "Lura", "", ""), {})
+    DetalhesContatoScreen(Contato("", "Ana", "Lura", "", ""), {}, {})
 }
