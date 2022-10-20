@@ -30,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import br.com.alura.helloapp.*
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
+import br.com.alura.helloapp.database.HelloAppDatabase
 import br.com.alura.helloapp.preferences.PreferencesKeys
 import br.com.alura.helloapp.preferences.dataStore
 import br.com.alura.helloapp.ui.details.DetalhesContatoActivity
@@ -42,6 +43,20 @@ import java.util.Calendar
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val database = HelloAppDatabase.getDatabase(this)
+        val contatoDao = database.contatoDao()
+
+        lifecycleScope.launch {
+            contatoDao.insere(
+                Contato(
+                    nome = "Odes",
+                    sobreNome = "Conhecido",
+                    telefone = "321",
+                    fotoPerfil = "urlTeste2"
+                )
+            )
+        }
 
         lifecycleScope.launch {
             dataStore.data.collect { preferences ->
@@ -184,7 +199,6 @@ private val contatosExemplo = listOf(
         aniversario = Calendar.getInstance().time
     ),
     Contato(
-
         nome = "Odes",
         sobreNome = "Conhecido",
         telefone = "321",
