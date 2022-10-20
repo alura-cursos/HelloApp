@@ -39,7 +39,7 @@ class DetalhesContatoActivity : ComponentActivity() {
         val intent = intent
         val idContato = intent.getStringExtra(CHAVE_CONTATO_ID)
         val contatoAtual =
-            Contato("", idContato.toString(), "", "", "", Calendar.getInstance().time)
+            Contato(1, idContato.toString(), "", "", "", Calendar.getInstance().time)
 
         setContent {
             HelloAppTheme {
@@ -223,6 +223,6 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
 @Composable
 fun DetalhesContatoScreenPrev() {
     DetalhesContatoScreen(Contato(
-        "", "Ana", "Lura", "", "", Calendar.getInstance().time
+        1, "Ana", "Lura", "", "", Calendar.getInstance().time
     ), {}, {})
 }

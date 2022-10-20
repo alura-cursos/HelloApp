@@ -169,7 +169,6 @@ fun ContatoItemPreview() {
 
 private val contatosExemplo = listOf(
     Contato(
-        id = "",
         nome = "Ana",
         sobreNome = "Clara",
         telefone = "123",
@@ -177,15 +176,15 @@ private val contatosExemplo = listOf(
 
         ),
     Contato(
-        id = "",
+
         nome = "Bill",
         sobreNome = "Lima",
         telefone = "321",
         fotoPerfil = "https://images.pexels.com/photos/1415882/pexels-photo-1415882.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        Calendar.getInstance().time
+        aniversario = Calendar.getInstance().time
     ),
     Contato(
-        id = "",
+
         nome = "Odes",
         sobreNome = "Conhecido",
         telefone = "321",

@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -66,8 +67,17 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // Lifecycles only (without ViewModel or LiveData)
+    // https://developer.android.com/jetpack/androidx/releases/lifecycle
     def lifecycle_version = "2.6.0-alpha02"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
 
+    // KAPT vs KSP: https://kotlinlang.org/docs/kapt.html
+    // Room: https://developer.android.com/jetpack/androidx/releases/room
+    def room_version = "2.4.3"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    kapt "androidx.room:room-compiler:$room_version"
 }
