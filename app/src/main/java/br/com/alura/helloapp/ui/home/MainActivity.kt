@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import br.com.alura.helloapp.*
 import br.com.alura.helloapp.R
@@ -37,14 +36,12 @@ import br.com.alura.helloapp.ui.details.DetalhesContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Adicionar campo de data de niver, para ter exemplo de converter com Room
 
         lifecycleScope.launch {
             dataStore.data.collect { preferences ->
@@ -184,7 +181,8 @@ private val contatosExemplo = listOf(
         nome = "Bill",
         sobreNome = "Lima",
         telefone = "321",
-        fotoPerfil = "https://images.pexels.com/photos/1415882/pexels-photo-1415882.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        fotoPerfil = "https://images.pexels.com/photos/1415882/pexels-photo-1415882.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        Calendar.getInstance().time
     ),
     Contato(
         id = "",

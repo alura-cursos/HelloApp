@@ -24,11 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.alura.helloapp.CHAVE_CONTATO_ID
 import br.com.alura.helloapp.R
+import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.ui.home.CadastroContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import java.util.Calendar
 
 class DetalhesContatoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,21 +38,18 @@ class DetalhesContatoActivity : ComponentActivity() {
 
         val intent = intent
         val idContato = intent.getStringExtra(CHAVE_CONTATO_ID)
-        val contatoAtual = Contato("", idContato.toString(), "", "", "")
+        val contatoAtual =
+            Contato("", idContato.toString(), "", "", "", Calendar.getInstance().time)
 
         setContent {
             HelloAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    DetalhesContatoScreen(
-                        contatoAtual,
-                        onBackClick = { finish() },
-                        onEditClick = {
-                            startActivity(Intent(this, CadastroContatoActivity::class.java))
-                        })
+                    DetalhesContatoScreen(contatoAtual, onBackClick = { finish() }, onEditClick = {
+                        startActivity(Intent(this, CadastroContatoActivity::class.java))
+                    })
                 }
             }
         }
@@ -66,44 +65,37 @@ fun DetalhesContatoScreen(contato: Contato, onBackClick: () -> Unit, onEditClick
     }
 }
 
-
 @Composable
 fun DetalhesContatoAppBar(onBackClick: () -> Unit, onEditClick: () -> Unit) {
-    TopAppBar(
-        title = { },
-        navigationIcon = {
-            IconButton(
-                onClick = onBackClick
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    tint = Color.White,
-                    contentDescription = "Voltar"
-                )
-            }
-        },
-        actions = {
-            IconButton(
-                onClick = onEditClick
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    tint = Color.White,
-                    contentDescription = "Editar"
-                )
-            }
-
-            IconButton(
-                onClick = { /*TODO*/ }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    tint = Color.White,
-                    contentDescription = "Deletar"
-                )
-            }
+    TopAppBar(title = { }, navigationIcon = {
+        IconButton(
+            onClick = onBackClick
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                tint = Color.White,
+                contentDescription = "Voltar"
+            )
         }
-    )
+    }, actions = {
+        IconButton(
+            onClick = onEditClick
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                tint = Color.White,
+                contentDescription = "Editar"
+            )
+        }
+
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                tint = Color.White,
+                contentDescription = "Deletar"
+            )
+        }
+    })
 }
 
 @Composable
@@ -119,8 +111,7 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
                 .fillMaxWidth()
                 .height(250.dp),
             contentScale = ContentScale.Crop,
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(contato.fotoPerfil).build(),
+            model = ImageRequest.Builder(LocalContext.current).data(contato.fotoPerfil).build(),
             placeholder = painterResource(R.drawable.default_profile_picture),
             error = painterResource(R.drawable.default_profile_picture),
             contentDescription = "Foto de perfil do contato",
@@ -152,8 +143,7 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
                     tint = MaterialTheme.colors.primary
                 )
                 Text(
-                    text = stringResource(R.string.ligar),
-                    color = MaterialTheme.colors.primary
+                    text = stringResource(R.string.ligar), color = MaterialTheme.colors.primary
                 )
             }
             Column(
@@ -170,8 +160,7 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
                     tint = MaterialTheme.colors.primary
                 )
                 Text(
-                    text = stringResource(R.string.mensagem),
-                    color = MaterialTheme.colors.primary
+                    text = stringResource(R.string.mensagem), color = MaterialTheme.colors.primary
                 )
             }
         }
@@ -191,8 +180,7 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
             )
 
             Text(
-                text = "${contato.nome} ${contato.sobreNome}",
-                style = MaterialTheme.typography.h6
+                text = "${contato.nome} ${contato.sobreNome}", style = MaterialTheme.typography.h6
             )
             Text(
                 modifier = Modifier.padding(bottom = 16.dp),
@@ -203,17 +191,29 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
 
 
             Text(
-                text = "4002-8922",
-                style = MaterialTheme.typography.h6
+                text = "4002-8922", style = MaterialTheme.typography.h6
             )
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Start),
+                    .padding(bottom = 16.dp),
                 text = stringResource(id = R.string.telefone),
                 color = Color.Gray,
                 style = MaterialTheme.typography.body2
             )
+
+            contato.aniversario?.let {
+                Text(
+                    text = contato.aniversario.converteParaString(),
+                    style = MaterialTheme.typography.h6
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.aniversario),
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.body2
+                )
+            }
 
         }
     }
@@ -222,5 +222,7 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
 @Preview
 @Composable
 fun DetalhesContatoScreenPrev() {
-    DetalhesContatoScreen(Contato("", "Ana", "Lura", "", ""), {}, {})
+    DetalhesContatoScreen(Contato(
+        "", "Ana", "Lura", "", "", Calendar.getInstance().time
+    ), {}, {})
 }

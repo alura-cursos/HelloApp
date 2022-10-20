@@ -1,6 +1,11 @@
+@file:Suppress("NAME_SHADOWING")
+
 package br.com.alura.helloapp.ui.home
 
+import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.*
@@ -28,9 +34,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.alura.helloapp.R
+import br.com.alura.helloapp.converteParaString
+import br.com.alura.helloapp.ui.componets.CarregaFotoDialog
+import br.com.alura.helloapp.ui.componets.DataPickerDialogTest
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CadastroContatoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +59,7 @@ class CadastroContatoActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun CadastroScreen(onClickSalvar: () -> Unit) {
     Scaffold(
@@ -60,14 +72,16 @@ fun CadastroScreen(onClickSalvar: () -> Unit) {
 @Composable
 fun CadastroContent(modifier: Modifier = Modifier, onClickSalvar: () -> Unit) {
     val context = LocalContext.current
-    val showDialog = remember { mutableStateOf(false) }
+    val showImageDialog = remember { mutableStateOf(false) }
+    val showDateDialog = remember { mutableStateOf(false) }
 
-    if (showDialog.value) {
+
+    if (showImageDialog.value) {
         CarregaFotoDialog(onDismiss = {
-            showDialog.value = false
+            showImageDialog.value = false
         }) { urlImage ->
             Toast.makeText(context, "Url iamgem: $urlImage", Toast.LENGTH_SHORT).show()
-            showDialog.value = false
+            showImageDialog.value = false
         }
     }
 
@@ -85,7 +99,7 @@ fun CadastroContent(modifier: Modifier = Modifier, onClickSalvar: () -> Unit) {
                     .size(180.dp)
                     .clip(CircleShape)
                     .clickable {
-                        showDialog.value = true
+                        showImageDialog.value = true
                     },
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(R.drawable.default_profile_picture).build(),
@@ -106,6 +120,18 @@ fun CadastroContent(modifier: Modifier = Modifier, onClickSalvar: () -> Unit) {
             var nome by remember { mutableStateOf("") }
             var sobrenome by remember { mutableStateOf("") }
             var telefone by remember { mutableStateOf("") }
+            var aniversario by remember { mutableStateOf("Aniversário") }
+
+            if (showDateDialog.value) {
+                DataPickerDialogTest(
+                    context,
+                    onDismiss = { showDateDialog.value = false },
+                    onClickDataSelecionada =
+                    { dataSelecionada ->
+                        aniversario = dataSelecionada.converteParaString()
+                    }
+                )
+            }
 
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
@@ -135,6 +161,20 @@ fun CadastroContent(modifier: Modifier = Modifier, onClickSalvar: () -> Unit) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
             )
 
+            OutlinedButton(
+                onClick = { showDateDialog.value = true }, modifier = Modifier
+                    .fillMaxWidth()
+
+            ) {
+                Icon(
+                    imageVector = Icons.Default.DateRange, contentDescription = null,
+                    Modifier.padding(8.dp)
+                )
+                Text(text = aniversario)
+            }
+
+
+
             Spacer(Modifier.height(16.dp))
             Button(
                 modifier = Modifier
@@ -153,64 +193,6 @@ fun CadastroAppBar() {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.title_activity_cadastro_contato)) },
     )
-}
-
-
-@Composable
-fun CarregaFotoDialog(onDismiss: () -> Unit, onConfirmButton: (urlImagem: String) -> Unit) {
-    var urlImagem by remember { mutableStateOf("") }
-
-    Dialog(onDismissRequest = { onDismiss() }, content = {
-        Column(
-            Modifier
-                .clip(RoundedCornerShape(5))
-                .heightIn(250.dp)
-                .widthIn(200.dp)
-                .background(Color.White)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(5, 5)),
-                contentScale = ContentScale.Crop,
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(R.drawable.default_profile_picture).build(),
-                placeholder = painterResource(R.drawable.default_profile_picture),
-                error = painterResource(R.drawable.default_profile_picture),
-                contentDescription = "Foto de perfil do contato",
-            )
-
-            OutlinedTextField(modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-                value = urlImagem,
-                onValueChange = { urlImagem = it },
-                label = { Text(stringResource(id = R.string.link_imagem)) })
-
-            Button(
-                onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(R.string.carregar))
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) {
-                    Text(text = "Cancelar")
-                }
-
-                TextButton(onClick = { onConfirmButton(urlImagem) }) {
-                    Text(text = "Salvar")
-                }
-            }
-        }
-    })
-
 }
 
 
