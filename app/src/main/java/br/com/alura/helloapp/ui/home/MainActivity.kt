@@ -2,6 +2,7 @@ package br.com.alura.helloapp.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -25,20 +26,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.lifecycle.lifecycleScope
 import br.com.alura.helloapp.*
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
+import br.com.alura.helloapp.preferences.PreferencesKeys
+import br.com.alura.helloapp.preferences.dataStore
 import br.com.alura.helloapp.ui.details.DetalhesContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         // Adicionar campo de data de niver, para ter exemplo de converter com Room
+
+        lifecycleScope.launch {
+            dataStore.data.collect { preferences ->
+                val nome = preferences[PreferencesKeys.NOME_USUARIO].toString()
+                Toast.makeText(this@MainActivity, "O nome do usuário é $nome", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
 
         setContent {
             HelloAppTheme {

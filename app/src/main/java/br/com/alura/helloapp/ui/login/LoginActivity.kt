@@ -10,7 +10,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,23 +23,51 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.edit
+import androidx.lifecycle.lifecycleScope
 import br.com.alura.helloapp.R
+import br.com.alura.helloapp.data.Usuario
+import br.com.alura.helloapp.preferences.PreferencesKeys.NOME_USUARIO
+import br.com.alura.helloapp.preferences.PreferencesKeys.USUARIO_LOGADO
+import br.com.alura.helloapp.preferences.dataStore
 import br.com.alura.helloapp.ui.home.MainActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
+import kotlinx.coroutines.launch
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Esse código faz com que a tela apareça alguns instantes e depois mude para a MainActivity
+        // Temos duas soluções: A que será gravada: Mover para a main e redirecionar pra cá se necessario.
+        // Ou: Implementar SplashScreen nas atividades
+        lifecycleScope.launch {
+            dataStore.data.collect { preferences ->
+                if (preferences[USUARIO_LOGADO] == true) {
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                }
+            }
+        }
+
         setContent {
             HelloAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    HomeLogin {
+                    HomeLogin(onClickEntrar = {
                         startActivity(Intent(this, MainActivity::class.java))
                         this.finish()
-                    }
+                    }, onClickCriarLogin = { usuario ->
+                        lifecycleScope.launch {
+                            dataStore.edit { preferences ->
+                                preferences[NOME_USUARIO] = usuario.nome
+                                preferences[USUARIO_LOGADO] = true
+                            }
+                        }
+                    })
+
                 }
             }
         }
@@ -45,7 +75,7 @@ class LoginActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeLogin(onClickEntrar: () -> Unit) {
+fun HomeLogin(onClickEntrar: () -> Unit, onClickCriarLogin: (usuario: Usuario) -> Unit) {
     var screenState: AppsScreens by remember {
         mutableStateOf(AppsScreens.Login)
     }
@@ -55,6 +85,7 @@ fun HomeLogin(onClickEntrar: () -> Unit) {
             screenState = AppsScreens.Cadastro
         }
         AppsScreens.Cadastro -> CadastroLoginScreen() {
+            onClickCriarLogin(it)
             screenState = AppsScreens.Login
         }
     }
@@ -63,9 +94,7 @@ fun HomeLogin(onClickEntrar: () -> Unit) {
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
-    onClickEntrar: () -> Unit,
-    onClickCriar: () -> Unit
+    modifier: Modifier = Modifier, onClickEntrar: () -> Unit, onClickCriar: () -> Unit
 ) {
 
     Column(Modifier.fillMaxSize()) {
@@ -137,7 +166,10 @@ fun LoginScreen(
 }
 
 @Composable
-fun CadastroLoginScreen(modifier: Modifier = Modifier, onClickLogin: () -> Unit) {
+fun CadastroLoginScreen(
+    modifier: Modifier = Modifier,
+    onClickCriarLogin: (usuario: Usuario) -> Unit
+) {
 
     Column(
         Modifier
@@ -190,12 +222,20 @@ fun CadastroLoginScreen(modifier: Modifier = Modifier, onClickLogin: () -> Unit)
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
 
+
+
         Spacer(Modifier.height(16.dp))
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(56.dp), onClick = onClickLogin
-        ) {
+        Button(modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(56.dp),
+            onClick = {
+                val novoUsuario = Usuario(
+                    nome = nome,
+                    usuario = usuario,
+                    senha = senha
+                )
+                onClickCriarLogin(novoUsuario)
+            }) {
             Text(text = stringResource(R.string.criar))
         }
     }

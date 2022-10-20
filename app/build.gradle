@@ -64,5 +64,10 @@ dependencies {
     implementation "io.coil-kt:coil-compose:2.2.2"
     implementation "com.google.accompanist:accompanist-placeholder-material:0.25.0"
 
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    def lifecycle_version = "2.6.0-alpha02"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+
 
 }
