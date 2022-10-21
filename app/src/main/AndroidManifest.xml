@@ -31,7 +31,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.details.DetalhesContatoActivity"
+            android:name=".ui.form.DetalhesContatoActivity"
             android:exported="false"
             android:label="@string/title_activity_detalhes_contato"
             android:theme="@style/Theme.HelloApp">
@@ -40,7 +40,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.home.CadastroContatoActivity"
+            android:name=".ui.form.CadastroContatoActivity"
             android:exported="false"
             android:label="@string/title_activity_cadastro_contato"
             android:theme="@style/Theme.HelloApp">

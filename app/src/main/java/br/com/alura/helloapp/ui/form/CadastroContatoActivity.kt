@@ -1,6 +1,6 @@
 @file:Suppress("NAME_SHADOWING")
 
-package br.com.alura.helloapp.ui.home
+package br.com.alura.helloapp.ui.form
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,9 +18,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,63 +34,55 @@ import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.HelloAppDatabase
 import br.com.alura.helloapp.ui.components.CarregaFotoDialog
-import br.com.alura.helloapp.ui.components.DataPickerDialogTest
+import br.com.alura.helloapp.ui.components.dataPickerDialog
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 
 class CadastroContatoActivity : ComponentActivity() {
+    private val contatoDao by lazy {
+        HelloAppDatabase.getDatabase(this).contatoDao()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val database = HelloAppDatabase.getDatabase(this)
-        val contatoDao = database.contatoDao()
-
-        val intent = intent
         val idContato = intent.getLongExtra(CHAVE_CONTATO_ID, 0L)
 
-        val tituloAppBar =
-            if (idContato == 0L) getString(R.string.title_activity_cadastro_contato) else getString(
-                R.string.title_activity_editar_contato
-            )
         setContent {
             HelloAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    // Checar com o Alex o que ele acha disso depois, "Contato" tem todos campos com valor padrão
-                    var contatoCarregado by remember {
-                        mutableStateOf(Contato())
-                    }
+                    // Checar com o Alex o que ele acha disso depois, "Contato" tem todos campos com valor padrão vazio ""
+                    var contatoCarregado by remember { mutableStateOf(Contato()) }
 
                     val coroutineScope = rememberCoroutineScope()
 
                     LaunchedEffect(coroutineScope) {
                         contatoDao.buscaPorId(idContato).collect {
-                            contatoCarregado = it
-
+                            it?.let { contatoCarregado = it }
                             setContent {
-                                CadastroScreen(
-                                    contatoCarregado,
-                                    tituloAppBar,
+                                CadastroScreen(contatoCarregado,
+                                    tituloAppBar(idContato),
                                     onClickSalvar = { contato ->
                                         lifecycleScope.launch {
-
                                             contatoDao.insere(contato)
-
-
                                         }
                                         finish()
                                     })
                             }
-
-
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun tituloAppBar(idContato: Long): String {
+        return if (idContato == 0L) getString(R.string.title_activity_cadastro_contato)
+        else getString(R.string.title_activity_editar_contato)
     }
 }
 
@@ -102,10 +96,10 @@ fun CadastroScreen(
     Scaffold(
         topBar = { CadastroAppBar(tituloAppBar) },
     ) { paddingValues ->
-        CadastroContent(contatoCarregado,
+        CadastroContent(
+            contatoCarregado,
             Modifier.padding(paddingValues),
-            onClickSalvar = { onClickSalvar(it) }
-        )
+            onClickSalvar = { onClickSalvar(it) })
     }
 }
 
@@ -124,8 +118,8 @@ fun CadastroContent(
     var telefone by remember { mutableStateOf(contatoCarregado.telefone) }
     var imagemPeril by remember { mutableStateOf(contatoCarregado.fotoPerfil) }
 
-    val textoAniversario = if (contatoCarregado.aniversario == null)
-        "Aniversário" else contatoCarregado.aniversario.converteParaString()
+    val textoAniversario =
+        if (contatoCarregado.aniversario == null) stringResource(id = R.string.aniversario) else contatoCarregado.aniversario.converteParaString()
     var aniversario by remember { mutableStateOf(textoAniversario) }
 
     if (showImageDialog.value) {
@@ -153,14 +147,15 @@ fun CadastroContent(
                     .clickable {
                         showImageDialog.value = true
                     },
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imagemPeril).build(),
+                model = ImageRequest.Builder(LocalContext.current).data(imagemPeril).build(),
                 placeholder = painterResource(R.drawable.default_profile_picture),
                 error = painterResource(R.drawable.default_profile_picture),
-                contentDescription = "Foto de perfil do contato",
+                contentScale = ContentScale.Crop,
+                contentDescription = stringResource(id = R.string.foto_perfil_contato),
             )
             Text(
-                text = "Adicionar foto", style = MaterialTheme.typography.subtitle1
+                text = stringResource(R.string.adicionar_foto),
+                style = MaterialTheme.typography.subtitle1
             )
         }
         Column(
@@ -171,17 +166,15 @@ fun CadastroContent(
         ) {
 
             if (showDateDialog.value) {
-                DataPickerDialogTest(
-                    context,
+                dataPickerDialog(context,
                     onDismiss = { showDateDialog.value = false },
-                    onClickDataSelecionada =
-                    { dataSelecionada ->
+                    onClickDataSelecionada = { dataSelecionada ->
                         aniversario = dataSelecionada.converteParaString()
-                    }
-                )
+                    })
             }
 
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Person, contentDescription = null
@@ -189,12 +182,17 @@ fun CadastroContent(
                 },
                 value = nome,
                 onValueChange = { nome = it },
-                label = { Text(stringResource(id = R.string.nome)) })
+                label = { Text(stringResource(id = R.string.nome)) },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words)
+            )
 
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = sobrenome,
                 onValueChange = { sobrenome = it },
-                label = { Text(stringResource(id = R.string.sobrenome)) })
+                label = { Text(stringResource(id = R.string.sobrenome)) },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words)
+            )
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -210,35 +208,32 @@ fun CadastroContent(
             )
 
             OutlinedButton(
-                onClick = { showDateDialog.value = true }, modifier = Modifier
-                    .fillMaxWidth()
+                onClick = { showDateDialog.value = true }, modifier = Modifier.fillMaxWidth()
 
             ) {
                 Icon(
-                    imageVector = Icons.Default.DateRange, contentDescription = null,
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = null,
                     Modifier.padding(8.dp)
                 )
                 Text(text = aniversario)
             }
 
             Spacer(Modifier.height(16.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(56.dp),
-                onClick = {
-                    onClickSalvar(
-                        Contato(
-                            contatoCarregado.id,
-                            nome = nome,
-                            sobreNome = sobrenome,
-                            telefone = telefone,
-                            fotoPerfil = imagemPeril,
-                            aniversario = aniversario.converteParaDate()
-                        )
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(56.dp), onClick = {
+                onClickSalvar(
+                    Contato(
+                        contatoCarregado.id,
+                        nome = nome,
+                        sobreNome = sobrenome,
+                        telefone = telefone,
+                        fotoPerfil = imagemPeril,
+                        aniversario = aniversario.converteParaDate()
                     )
-                }
-            ) {
+                )
+            }) {
                 Text(text = stringResource(R.string.salvar))
             }
         }
@@ -253,14 +248,8 @@ fun CadastroAppBar(tituloApprBar: String) {
     )
 }
 
-
-@Composable
-fun CarregaFotoDialogPrev() {
-    CarregaFotoDialog({}, {})
-}
-
 @Preview
 @Composable
-fun CadastroScreenPrev() {
+fun CadastroScreenPreview() {
     CadastroScreen(Contato(), stringResource(id = R.string.title_activity_cadastro_contato), {})
 }

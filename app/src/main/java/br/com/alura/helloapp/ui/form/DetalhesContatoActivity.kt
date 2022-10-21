@@ -1,4 +1,4 @@
-package br.com.alura.helloapp.ui.details
+package br.com.alura.helloapp.ui.form
 
 import android.content.Intent
 import android.os.Bundle
@@ -24,14 +24,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.*
+import androidx.lifecycle.lifecycleScope
 import br.com.alura.helloapp.CHAVE_CONTATO_ID
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.HelloAppDatabase
 import br.com.alura.helloapp.ui.components.OnResumeCicloVidaAtual
-import br.com.alura.helloapp.ui.home.CadastroContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -63,7 +62,7 @@ class DetalhesContatoActivity : ComponentActivity() {
                     OnResumeCicloVidaAtual(LocalLifecycleOwner.current) {
                         coroutineScope.launch {
                             contatoDao.buscaPorId(idContato).collect {
-                                contatoCarregado = it
+                                it?.let { contatoCarregado = it }
                             }
                         }
                     }
@@ -75,9 +74,10 @@ class DetalhesContatoActivity : ComponentActivity() {
                                 contatoDao.remove(idContato)
                                 Toast.makeText(
                                     this@DetalhesContatoActivity,
-                                    "Apagado",
+                                    "Contato apagado",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                finish()
                             }
                         },
                         onEditClick = {
@@ -91,7 +91,6 @@ class DetalhesContatoActivity : ComponentActivity() {
         }
     }
 }
-
 
 @Composable
 fun DetalhesContatoScreen(

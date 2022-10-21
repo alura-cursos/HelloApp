@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelloApp</string>
+    <string name="app_name">HelloApp </string>
     <string name="title_activity_cadastro_contato">Adicionar contato</string>
     <string name="title_activity_editar_contato">Editar contato</string>
     <string name="title_activity_detalhes_contato">DetalhesContatoActivity</string>
@@ -21,4 +21,7 @@
     <string name="criar_nova_conta">Criar conta</string>
     <string name="criar">Criar</string>
     <string name="aniversario">Aniversário</string>
+    <string name="foto_perfil_contato">Foto de perfil do contato</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="adicionar_foto">Adicionar foto</string>
 </resources>

@@ -5,12 +5,12 @@ import java.util.*
 
 class Converters {
     @TypeConverter
-    fun deLongParaData(data: Long?): Date? {
+    fun deLongParaDate(data: Long?): Date? {
         return data?.let { Date(it) }
     }
 
     @TypeConverter
     fun dateParaLong(data: Date?): Long? {
-        return data?.time?.toLong()
+        return data?.time
     }
 }

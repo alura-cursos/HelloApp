@@ -13,6 +13,7 @@ import br.com.alura.helloapp.database.converter.Converters
 abstract class HelloAppDatabase : RoomDatabase() {
     abstract fun contatoDao(): ContatoDao
 
+    // Sem singleton por enquanto, mas adicionar antes de gravar
     companion object {
         fun getDatabase(context: Context): HelloAppDatabase {
             return Room.databaseBuilder(

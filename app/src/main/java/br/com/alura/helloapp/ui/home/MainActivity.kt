@@ -14,7 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,9 +32,9 @@ import br.com.alura.helloapp.*
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.HelloAppDatabase
-import br.com.alura.helloapp.preferences.PreferencesKeys
-import br.com.alura.helloapp.preferences.dataStore
-import br.com.alura.helloapp.ui.details.DetalhesContatoActivity
+import br.com.alura.helloapp.util.preferences.PreferencesKeys
+import br.com.alura.helloapp.util.preferences.dataStore
+import br.com.alura.helloapp.ui.form.DetalhesContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -43,12 +43,14 @@ import java.util.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.datastore.preferences.core.edit
 import br.com.alura.helloapp.ui.components.OnResumeCicloVidaAtual
+import br.com.alura.helloapp.ui.form.CadastroContatoActivity
+import br.com.alura.helloapp.ui.login.LoginActivity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         val database = HelloAppDatabase.getDatabase(this)
         val contatoDao = database.contatoDao()
@@ -61,7 +63,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             dataStore.data.collect { preferences ->
                 val nome = preferences[PreferencesKeys.NOME_USUARIO].toString()
-                Toast.makeText(this@MainActivity, "O nome do usuário é $nome", Toast.LENGTH_SHORT)
+                Toast.makeText(this@MainActivity, "Olá $nome", Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -86,11 +88,28 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    HomeScreen(contatosBuscados = contatosBuscados, abreTelaDetalhes = { contato ->
-                        val intent = Intent(this, DetalhesContatoActivity::class.java)
-                        intent.putExtra(CHAVE_CONTATO_ID, contato.id)
-                        startActivity(intent)
-                    }) {
+                    HomeScreen(
+                        contatosBuscados = contatosBuscados,
+                        onClickDesloga = {
+                            lifecycleScope.launch {
+                                dataStore.edit {
+                                    it.remove(PreferencesKeys.USUARIO_LOGADO)
+                                    startActivity(
+                                        Intent(
+                                            this@MainActivity,
+                                            LoginActivity::class.java
+                                        )
+                                    )
+                                    finish()
+                                }
+                            }
+                        },
+                        abreTelaDetalhes = { contato ->
+                            val intent = Intent(this, DetalhesContatoActivity::class.java)
+                            intent.putExtra(CHAVE_CONTATO_ID, contato.id)
+                            startActivity(intent)
+                        }
+                    ) {
                         val intent = Intent(this, CadastroContatoActivity::class.java)
                         startActivity(intent)
                     }
@@ -103,11 +122,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HomeScreen(
     contatosBuscados: List<Contato>,
+    onClickDesloga: () -> Unit,
     abreTelaDetalhes: (Contato) -> Unit,
     abreTelaCadastro: () -> Unit
 ) {
     Scaffold(
-        topBar = { HomeAppBar() },
+        topBar = { HomeAppBar(onClickDesloga = onClickDesloga) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { abreTelaCadastro() },
@@ -120,7 +140,6 @@ fun HomeScreen(
         }
     ) { paddingValues ->
         LazyColumn(contentPadding = paddingValues) {
-
             items(contatosBuscados) { contato ->
                 ContatoItem(contato) {
                     abreTelaDetalhes(contato)
@@ -131,17 +150,17 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeAppBar() {
+fun HomeAppBar(onClickDesloga: () -> Unit) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
         actions = {
             IconButton(
-                onClick = { /*TODO*/ }
+                onClick = onClickDesloga
             ) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    imageVector = Icons.Default.ExitToApp,
                     tint = Color.White,
-                    contentDescription = "Configurações do app"
+                    contentDescription = "Deslogar"
                 )
             }
         }
@@ -191,7 +210,7 @@ fun ContatoItem(contato: Contato, modifier: Modifier = Modifier, onClick: (Conta
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(contatosExemplo, {}, {})
+    HomeScreen(contatosExemplo, {}, {}, {})
 }
 
 @Preview
