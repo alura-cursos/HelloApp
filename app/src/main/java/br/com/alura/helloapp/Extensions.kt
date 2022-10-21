@@ -1,12 +1,18 @@
 package br.com.alura.helloapp
 
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 fun Date.converteParaString(): String {
-    val dataFormatadastring =
-        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(this)
+    return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(this)
+}
 
-    return dataFormatadastring
+fun String.converteParaDate(): Date? {
+    return try {
+        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(this)
+    } catch (e: ParseException) {
+        null
+    }
 }

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.Start
@@ -17,29 +17,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import br.com.alura.helloapp.CHAVE_CONTATO_ID
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
+import br.com.alura.helloapp.database.HelloAppDatabase
 import br.com.alura.helloapp.ui.home.CadastroContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import java.util.Calendar
+import java.util.*
 
 class DetalhesContatoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val intent = intent
-        val idContato = intent.getStringExtra(CHAVE_CONTATO_ID)
-        val contatoAtual =
-            Contato(1, idContato.toString(), "", "", "", Calendar.getInstance().time)
+        val idContato = intent.getLongExtra(CHAVE_CONTATO_ID, 0L)
+
+        val contatoDao = HelloAppDatabase.getDatabase(this).contatoDao()
 
         setContent {
             HelloAppTheme {
@@ -47,9 +53,30 @@ class DetalhesContatoActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    DetalhesContatoScreen(contatoAtual, onBackClick = { finish() }, onEditClick = {
-                        startActivity(Intent(this, CadastroContatoActivity::class.java))
-                    })
+
+                    // Checar com o Alex o que ele acha disso depois, "Contato" tem todos campos com valor padrão
+                    var contatoCarregado by remember {
+                        mutableStateOf(Contato())
+                    }
+
+                    val coroutineScope = rememberCoroutineScope()
+
+
+                    LaunchedEffect(coroutineScope) {
+                        contatoDao.buscaPorId(idContato).collect {
+                            contatoCarregado = it
+                        }
+                    }
+
+                    DetalhesContatoScreen(
+                        contatoCarregado,
+                        onBackClick = { finish() },
+                        onEditClick = {
+                            val intent = Intent(this, CadastroContatoActivity::class.java)
+                            intent.putExtra(CHAVE_CONTATO_ID, idContato)
+                            startActivity(intent)
+                        })
+
                 }
             }
         }
@@ -57,7 +84,31 @@ class DetalhesContatoActivity : ComponentActivity() {
 }
 
 @Composable
+private fun onResumeCicloVidaAtual(
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    onResume: () -> Unit,
+) {
+    val currentOnResume by rememberUpdatedState(onResume)
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                currentOnResume()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+}
+
+
+@Composable
 fun DetalhesContatoScreen(contato: Contato, onBackClick: () -> Unit, onEditClick: () -> Unit) {
+
     Scaffold(
         topBar = { DetalhesContatoAppBar(onBackClick = onBackClick, onEditClick = onEditClick) },
     ) { paddingValues ->

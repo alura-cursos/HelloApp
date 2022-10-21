@@ -7,9 +7,9 @@ import java.util.*
 @Entity
 data class Contato(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
-    val nome: String,
-    val sobreNome: String,
-    val telefone: String,
-    val fotoPerfil: String,
+    val nome: String = "",
+    val sobreNome: String = "",
+    val telefone: String = "",
+    val fotoPerfil: String = "",
     val aniversario: Date? = null,
 )

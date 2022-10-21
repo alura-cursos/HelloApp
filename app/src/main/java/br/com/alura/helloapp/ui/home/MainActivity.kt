@@ -2,6 +2,7 @@ package br.com.alura.helloapp.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,24 +39,21 @@ import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.util.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         val database = HelloAppDatabase.getDatabase(this)
         val contatoDao = database.contatoDao()
 
         lifecycleScope.launch {
-            contatoDao.insere(
-                Contato(
-                    nome = "Odes",
-                    sobreNome = "Conhecido",
-                    telefone = "321",
-                    fotoPerfil = "urlTeste2"
-                )
-            )
+            val contatosBanco = contatoDao.buscaTodos()
+            Log.i("contatosBanco", "onCreate: ${contatosBanco.toString()} ")
         }
 
         lifecycleScope.launch {
@@ -72,10 +70,22 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    HomeScreen(abreTelaDetalhes = { contato ->
 
+                    var contatosBuscados by remember {
+                        mutableStateOf(emptyList<Contato>())
+                    }
+
+                    LaunchedEffect(null) {
+
+                        contatoDao.buscaTodos().collect() {
+                            contatosBuscados = it
+                        }
+
+                    }
+
+                    HomeScreen(contatosBuscados = contatosBuscados, abreTelaDetalhes = { contato ->
                         val intent = Intent(this, DetalhesContatoActivity::class.java)
-                        intent.putExtra(CHAVE_CONTATO_ID, contato.nome + " Tem que ser o id aqui")
+                        intent.putExtra(CHAVE_CONTATO_ID, contato.id)
                         startActivity(intent)
                     }) {
                         val intent = Intent(this, CadastroContatoActivity::class.java)
@@ -88,7 +98,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen(abreTelaDetalhes: (Contato) -> Unit, abreTelaCadastro: () -> Unit) {
+fun HomeScreen(
+    contatosBuscados: List<Contato>,
+    abreTelaDetalhes: (Contato) -> Unit,
+    abreTelaCadastro: () -> Unit
+) {
     Scaffold(
         topBar = { HomeAppBar() },
         floatingActionButton = {
@@ -103,7 +117,8 @@ fun HomeScreen(abreTelaDetalhes: (Contato) -> Unit, abreTelaCadastro: () -> Unit
         }
     ) { paddingValues ->
         LazyColumn(contentPadding = paddingValues) {
-            items(contatosExemplo) { contato ->
+
+            items(contatosBuscados) { contato ->
                 ContatoItem(contato) {
                     abreTelaDetalhes(contato)
                 }
@@ -173,7 +188,7 @@ fun ContatoItem(contato: Contato, modifier: Modifier = Modifier, onClick: (Conta
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen({}, {})
+    HomeScreen(contatosExemplo, {}, {})
 }
 
 @Preview
@@ -182,7 +197,7 @@ fun ContatoItemPreview() {
     ContatoItem(contatosExemplo.first()) {}
 }
 
-private val contatosExemplo = listOf(
+private var contatosExemplo: List<Contato> = listOf(
     Contato(
         nome = "Ana",
         sobreNome = "Clara",
