@@ -1,4 +1,4 @@
-package br.com.alura.helloapp.ui.componets
+package br.com.alura.helloapp.ui.components
 
 import android.app.DatePickerDialog
 import android.content.Context

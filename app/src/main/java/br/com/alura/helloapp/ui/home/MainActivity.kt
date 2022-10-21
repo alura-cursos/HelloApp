@@ -42,6 +42,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import br.com.alura.helloapp.ui.components.OnResumeCicloVidaAtual
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,12 +77,13 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf(emptyList<Contato>())
                     }
 
-                    LaunchedEffect(null) {
-
-                        contatoDao.buscaTodos().collect() {
-                            contatosBuscados = it
+                    val coroutineScope = rememberCoroutineScope()
+                    OnResumeCicloVidaAtual(LocalLifecycleOwner.current) {
+                        coroutineScope.launch {
+                            contatoDao.buscaTodos().collect() {
+                                contatosBuscados = it
+                            }
                         }
-
                     }
 
                     HomeScreen(contatosBuscados = contatosBuscados, abreTelaDetalhes = { contato ->

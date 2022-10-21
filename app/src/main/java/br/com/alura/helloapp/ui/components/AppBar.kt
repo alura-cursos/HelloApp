@@ -1,4 +1,4 @@
-package br.com.alura.helloapp.ui.componets
+package br.com.alura.helloapp.ui.components
 
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar

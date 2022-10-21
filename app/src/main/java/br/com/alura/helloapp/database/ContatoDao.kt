@@ -17,5 +17,5 @@ interface ContatoDao {
     fun buscaPorId(id: Long): Flow<Contato>
 
     @Query("DELETE FROM Contato WHERE id = :id")
-    fun remove(id: Long)
+    suspend fun remove(id: Long)
 }

@@ -2,6 +2,7 @@ package br.com.alura.helloapp.ui.details
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -23,19 +24,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.*
 import br.com.alura.helloapp.CHAVE_CONTATO_ID
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.HelloAppDatabase
+import br.com.alura.helloapp.ui.components.OnResumeCicloVidaAtual
 import br.com.alura.helloapp.ui.home.CadastroContatoActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.coroutines.launch
 import java.util.*
 
 class DetalhesContatoActivity : ComponentActivity() {
@@ -60,17 +60,26 @@ class DetalhesContatoActivity : ComponentActivity() {
                     }
 
                     val coroutineScope = rememberCoroutineScope()
-
-
-                    LaunchedEffect(coroutineScope) {
-                        contatoDao.buscaPorId(idContato).collect {
-                            contatoCarregado = it
+                    OnResumeCicloVidaAtual(LocalLifecycleOwner.current) {
+                        coroutineScope.launch {
+                            contatoDao.buscaPorId(idContato).collect {
+                                contatoCarregado = it
+                            }
                         }
                     }
 
-                    DetalhesContatoScreen(
-                        contatoCarregado,
+                    DetalhesContatoScreen(contatoCarregado,
                         onBackClick = { finish() },
+                        onDeleteClick = {
+                            lifecycleScope.launch {
+                                contatoDao.remove(idContato)
+                                Toast.makeText(
+                                    this@DetalhesContatoActivity,
+                                    "Apagado",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
                         onEditClick = {
                             val intent = Intent(this, CadastroContatoActivity::class.java)
                             intent.putExtra(CHAVE_CONTATO_ID, idContato)
@@ -83,41 +92,34 @@ class DetalhesContatoActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
-private fun onResumeCicloVidaAtual(
-    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
-    onResume: () -> Unit,
+fun DetalhesContatoScreen(
+    contato: Contato,
+    onBackClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit
 ) {
-    val currentOnResume by rememberUpdatedState(onResume)
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                currentOnResume()
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-}
-
-
-@Composable
-fun DetalhesContatoScreen(contato: Contato, onBackClick: () -> Unit, onEditClick: () -> Unit) {
 
     Scaffold(
-        topBar = { DetalhesContatoAppBar(onBackClick = onBackClick, onEditClick = onEditClick) },
+        topBar = {
+            DetalhesContatoAppBar(
+                onBackClick = onBackClick,
+                onDeleteClick = onDeleteClick,
+                onEditClick = onEditClick
+            )
+        },
     ) { paddingValues ->
         DetalhesContatoContent(Modifier.padding(paddingValues), contato)
     }
 }
 
 @Composable
-fun DetalhesContatoAppBar(onBackClick: () -> Unit, onEditClick: () -> Unit) {
+fun DetalhesContatoAppBar(
+    onBackClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit
+) {
     TopAppBar(title = { }, navigationIcon = {
         IconButton(
             onClick = onBackClick
@@ -133,13 +135,11 @@ fun DetalhesContatoAppBar(onBackClick: () -> Unit, onEditClick: () -> Unit) {
             onClick = onEditClick
         ) {
             Icon(
-                imageVector = Icons.Default.Edit,
-                tint = Color.White,
-                contentDescription = "Editar"
+                imageVector = Icons.Default.Edit, tint = Color.White, contentDescription = "Editar"
             )
         }
 
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = onDeleteClick) {
             Icon(
                 imageVector = Icons.Default.Delete,
                 tint = Color.White,
@@ -275,5 +275,5 @@ fun DetalhesContatoContent(modifier: Modifier = Modifier, contato: Contato) {
 fun DetalhesContatoScreenPrev() {
     DetalhesContatoScreen(Contato(
         1, "Ana", "Lura", "", "", Calendar.getInstance().time
-    ), {}, {})
+    ), {}, {}, {})
 }

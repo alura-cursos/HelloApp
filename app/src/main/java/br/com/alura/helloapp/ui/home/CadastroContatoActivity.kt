@@ -3,7 +3,6 @@
 package br.com.alura.helloapp.ui.home
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -32,8 +31,8 @@ import br.com.alura.helloapp.converteParaDate
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.HelloAppDatabase
-import br.com.alura.helloapp.ui.componets.CarregaFotoDialog
-import br.com.alura.helloapp.ui.componets.DataPickerDialogTest
+import br.com.alura.helloapp.ui.components.CarregaFotoDialog
+import br.com.alura.helloapp.ui.components.DataPickerDialogTest
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
