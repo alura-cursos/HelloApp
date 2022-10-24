@@ -3,6 +3,7 @@ package br.com.alura.helloapp.ui.form
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,10 +14,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +45,6 @@ fun TelaCadastro(
     Scaffold(
         topBar = { CadastroAppBar(tituloAppBar) },
     ) { paddingValues ->
-
         val context = LocalContext.current
         val mostrarCaixaDialogoImagem = remember { mutableStateOf(false) }
         val mostrarCaixaDialogoData = remember { mutableStateOf(false) }
@@ -106,6 +110,7 @@ fun TelaCadastro(
                             aniversario = dataSelecionada.converteParaString()
                         })
                 }
+                val focuAtual = LocalFocusManager.current
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -118,7 +123,11 @@ fun TelaCadastro(
                     value = nome,
                     onValueChange = { nome = it },
                     label = { Text(stringResource(id = R.string.nome)) },
-                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words)
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = (KeyboardActions(onNext = { focuAtual.moveFocus(FocusDirection.Next) }))
                 )
 
                 OutlinedTextField(
@@ -126,7 +135,11 @@ fun TelaCadastro(
                     value = sobrenome,
                     onValueChange = { sobrenome = it },
                     label = { Text(stringResource(id = R.string.sobrenome)) },
-                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words)
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = (KeyboardActions(onNext = { focuAtual.moveFocus(FocusDirection.Next) }))
                 )
 
                 OutlinedTextField(
@@ -140,7 +153,11 @@ fun TelaCadastro(
                     value = telefone,
                     onValueChange = { telefone = it },
                     label = { Text(stringResource(id = R.string.telefone)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = (KeyboardActions(onNext = { focuAtual.clearFocus() }))
                 )
 
                 OutlinedButton(

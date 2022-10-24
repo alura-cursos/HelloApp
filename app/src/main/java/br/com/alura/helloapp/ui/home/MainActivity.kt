@@ -9,13 +9,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
 import br.com.alura.helloapp.CHAVE_CONTATO_ID
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.HelloAppDatabase
-import br.com.alura.helloapp.ui.components.OnResumeCicloVidaAtual
 import br.com.alura.helloapp.ui.form.CadastroContatoActivity
 import br.com.alura.helloapp.ui.form.DetalhesContatoActivity
 import br.com.alura.helloapp.ui.login.LoginActivity
@@ -44,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     val coroutineScope = rememberCoroutineScope()
-                    OnResumeCicloVidaAtual(LocalLifecycleOwner.current) {
+                    LaunchedEffect(null) {
                         coroutineScope.launch {
                             contatoDao.buscaTodos().collect() {
                                 contatosBuscados = it
