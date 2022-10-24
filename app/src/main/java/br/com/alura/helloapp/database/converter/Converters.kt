@@ -10,7 +10,7 @@ class Converters {
     }
 
     @TypeConverter
-    fun dateParaLong(data: Date?): Long? {
+    fun deDateParaLong(data: Date?): Long? {
         return data?.time
     }
 }

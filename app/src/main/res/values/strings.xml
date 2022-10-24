@@ -24,4 +24,10 @@
     <string name="foto_perfil_contato">Foto de perfil do contato</string>
     <string name="cancelar">Cancelar</string>
     <string name="adicionar_foto">Adicionar foto</string>
+    <string name="contato_apagado">Contato apagado</string>
+    <string name="voltar">Voltar</string>
+    <string name="editar">Editar</string>
+    <string name="deletar">Deletar</string>
+    <string name="adicionar_novo_contato">Adicionar novo contato</string>
+    <string name="deslogar">Deslogar</string>
 </resources>

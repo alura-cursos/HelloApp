@@ -6,7 +6,7 @@ import java.util.*
 
 fun String.converteParaDate(): Date? {
     return try {
-        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(this)
+        SimpleDateFormat(FORMATO_DATA_DIA_MES_ANO, Locale.getDefault()).parse(this)
     } catch (e: ParseException) {
         null
     }

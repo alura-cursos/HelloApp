@@ -8,7 +8,7 @@ import java.util.*
 data class Contato(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     val nome: String = "",
-    val sobreNome: String = "",
+    val sobrenome: String = "",
     val telefone: String = "",
     val fotoPerfil: String = "",
     val aniversario: Date? = null,

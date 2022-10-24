@@ -6,7 +6,6 @@ import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -27,9 +26,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import java.util.*
 
-fun dataPickerDialog(
+fun caixaDialogoData(
     context: Context,
-    onDismiss: () -> Unit,
+    onClickDispensar: () -> Unit,
     onClickDataSelecionada: (dataSelecionada: Date) -> Unit,
 ) {
 
@@ -40,91 +39,75 @@ fun dataPickerDialog(
     calendario.time = Date()
 
     val datePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, _: Int, _: Int, _: Int ->
+        context, { _: DatePicker, _, _, _ ->
             calendario.set(ano, mes, dia)
             val dataSelecionada = calendario.time
             onClickDataSelecionada(dataSelecionada)
-        },
-        ano, mes, dia
+        }, ano, mes, dia
     )
 
     datePickerDialog.setOnDismissListener {
-        onDismiss()
+        onClickDispensar()
     }
     datePickerDialog.show()
-
 }
 
 
 @Composable
-fun CarregaFotoDialog(
-    onDismiss: () -> Unit,
-    onConfirmButton: (urlImagem: String) -> Unit
+fun CaixaDialogoImagem(
+    onClickDispensar: () -> Unit, onClickConfirmar: (urlImagem: String) -> Unit
 ) {
     var urlImagem by remember { mutableStateOf("") }
 
-    Dialog(
-        onDismissRequest = { onDismiss() },
-        content = {
-            Column(
-                Modifier
-                    .clip(RoundedCornerShape(5))
-                    .heightIn(250.dp)
-                    .widthIn(200.dp)
-                    .background(Color.White)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+    Dialog(onDismissRequest = { onClickDispensar() }, content = {
+        Column(
+            Modifier
+                .clip(RoundedCornerShape(5))
+                .heightIn(250.dp, 400.dp)
+                .widthIn(200.dp)
+                .background(Color.White)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-                AsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(5, 5)),
-                    contentScale = ContentScale.Crop,
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(urlImagem).build(),
-                    placeholder = painterResource(R.drawable.default_profile_picture),
-                    error = painterResource(R.drawable.default_profile_picture),
-                    contentDescription = stringResource(R.string.foto_perfil_contato),
-                )
-
-
-                OutlinedTextField(modifier = Modifier
+            AsyncImage(
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                    value = urlImagem,
-                    maxLines = 1,
-                    onValueChange = { urlImagem = it },
-                    label = { Text(stringResource(id = R.string.link_imagem)) })
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(5, 5)),
+                contentScale = ContentScale.Crop,
+                model = ImageRequest.Builder(LocalContext.current).data(urlImagem).build(),
+                placeholder = painterResource(R.drawable.default_profile_picture),
+                error = painterResource(R.drawable.default_profile_picture),
+                contentDescription = stringResource(R.string.foto_perfil_contato),
+            )
 
-//                Button(
-//                    onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Text(text = stringResource(R.string.carregar))
-//                }
+            OutlinedTextField(modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+                .heightIn(max = 80.dp),
+                value = urlImagem,
+                onValueChange = { urlImagem = it },
+                label = { Text(stringResource(id = R.string.link_imagem)) })
 
-                Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) {
-                        Text(text = stringResource(R.string.cancelar))
-                    }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = onClickDispensar) {
+                    Text(text = stringResource(R.string.cancelar))
+                }
 
-                    TextButton(onClick = { onConfirmButton(urlImagem) }) {
-                        Text(text = stringResource(R.string.salvar))
-                    }
+                TextButton(onClick = { onClickConfirmar(urlImagem) }) {
+                    Text(text = stringResource(R.string.salvar))
                 }
             }
         }
-    )
-
+    })
 }
 
 
 @Preview
 @Composable
-fun CarregaFotoDialogPreview() {
-    CarregaFotoDialog(onDismiss = { /*TODO*/ }, onConfirmButton = {})
+fun CaixaDialogoImagemPreview() {
+    CaixaDialogoImagem({}, {})
 }
