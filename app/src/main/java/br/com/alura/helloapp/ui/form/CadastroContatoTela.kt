@@ -35,10 +35,10 @@ import coil.request.ImageRequest
 
 
 @Composable
-fun TelaCadastro(
+fun CadastroContatoTela(
     modifier: Modifier = Modifier,
     viewModel: CadastroContatoViewModel = viewModel(),
-    onClickSalvar: (contato: Contato) -> Unit
+    onClickSalvar: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -154,7 +154,8 @@ fun TelaCadastro(
                         .fillMaxWidth()
                         .heightIn(56.dp),
                     onClick = {
-                        onClickSalvar(
+                        onClickSalvar()
+                        viewModel.salvarContato(
                             Contato(
                                 state.contato.id,
                                 nome = state.contato.nome,
@@ -164,6 +165,7 @@ fun TelaCadastro(
                                 aniversario = state.contato.aniversario
                             )
                         )
+
                     }
                 ) {
                     Text(text = stringResource(R.string.salvar))
@@ -203,7 +205,7 @@ fun CadastroAppBar(tituloApprBar: String) {
 @Preview
 @Composable
 fun TelaCadastroPreview() {
-    TelaCadastro(
+    CadastroContatoTela(
         Modifier,
         viewModel(),
     ) {}

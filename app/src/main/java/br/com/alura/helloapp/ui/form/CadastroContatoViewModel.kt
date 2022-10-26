@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaDate
 import br.com.alura.helloapp.converteParaString
+import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.util.AuxilarStringResource
 import kotlinx.coroutines.flow.*
@@ -64,6 +65,12 @@ class CadastroContatoViewModel(
                     contato = it.copy()
                 )
             }
+        }
+    }
+
+    fun salvarContato(contato: Contato) {
+        viewModelScope.launch {
+            contatoDao.insere(contato)
         }
     }
 

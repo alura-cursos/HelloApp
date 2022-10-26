@@ -6,13 +6,12 @@ import br.com.alura.helloapp.database.ContatoDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PrincipalViewModel(private val contatoDao: ContatoDao) : ViewModel() {
+class ListaContatosViewModel(private val contatoDao: ContatoDao) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PrincipalUiState())
-    val uiState: StateFlow<PrincipalUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ListaContatosUiState())
+    val uiState: StateFlow<ListaContatosUiState> = _uiState.asStateFlow()
 
 
     init {

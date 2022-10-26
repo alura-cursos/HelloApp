@@ -16,7 +16,7 @@ import br.com.alura.helloapp.data.Usuario
 import br.com.alura.helloapp.util.preferences.PreferencesKeys.NOME_USUARIO
 import br.com.alura.helloapp.util.preferences.PreferencesKeys.USUARIO_LOGADO
 import br.com.alura.helloapp.util.preferences.dataStore
-import br.com.alura.helloapp.ui.home.MainActivity
+import br.com.alura.helloapp.ui.home.ListaContatosActivity
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import kotlinx.coroutines.launch
 
@@ -32,7 +32,7 @@ class LoginActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
                     HomeLogin(onClickEntrar = {
-                        startActivity(Intent(this, MainActivity::class.java))
+                        startActivity(Intent(this, ListaContatosActivity::class.java))
                         this.finish()
                     }, onClickCriarLogin = { usuario ->
                         gravaLogin(usuario)
@@ -52,7 +52,7 @@ class LoginActivity : ComponentActivity() {
         lifecycleScope.launch {
             dataStore.data.collect { preferences ->
                 if (preferences[USUARIO_LOGADO] == true) {
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    startActivity(Intent(this@LoginActivity, ListaContatosActivity::class.java))
                     finish()
                 }
             }

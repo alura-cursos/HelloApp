@@ -43,7 +43,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.home.MainActivity"
+            android:name=".ui.home.ListaContatosActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.HelloApp">

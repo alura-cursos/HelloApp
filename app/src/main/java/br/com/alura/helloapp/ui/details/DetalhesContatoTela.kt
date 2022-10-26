@@ -20,15 +20,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaString
-import br.com.alura.helloapp.data.Contato
-import br.com.alura.helloapp.sampleData.contatosExemplo
 import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 
 @Composable
-fun TelaDetalhesContato(
+fun DetalhesContatoTela(
     modifier: Modifier = Modifier,
     viewModel: DetalhesContatoViewlModel = viewModel(),
     onClickVoltar: () -> Unit,
@@ -216,7 +214,7 @@ fun DetalhesContatoAppBar(
 @Preview
 @Composable
 fun DetalhesContatoScreenPreview() {
-    TelaDetalhesContato(
+    DetalhesContatoTela(
         Modifier,
         viewModel(),
         {}, {}, {}

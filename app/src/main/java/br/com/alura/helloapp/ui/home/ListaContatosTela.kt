@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.sampleData.contatosExemplo
@@ -31,9 +32,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun TelaPrincipal(
+fun ListaContatosTela(
     modifier: Modifier = Modifier,
-    viewModel: PrincipalViewModel = viewModel(),
+    viewModel: ListaContatosViewModel = viewModel(),
+
     onClickDeslogar: () -> Unit,
     onClickAbreDetalhes: (Contato) -> Unit,
     onClickAbreCadastro: () -> Unit,
@@ -52,6 +54,7 @@ fun TelaPrincipal(
                 )
             }
         }) { paddingValues ->
+
         LazyColumn(modifier.padding(paddingValues)) {
             items(state.contatos) { contato ->
                 ContatoItem(contato) {
@@ -123,7 +126,7 @@ fun ContatoItem(
 @Preview
 @Composable
 fun TelaPrincipalPreview() {
-    TelaPrincipal(Modifier, viewModel(), {}, {}, {})
+//    TelaPrincipal(Modifier, viewModel(),{}, {}, {})
 }
 
 @Preview
