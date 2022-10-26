@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.alura.helloapp.R
+import br.com.alura.helloapp.converteParaString
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import java.util.*
@@ -29,21 +30,21 @@ import java.util.*
 fun caixaDialogoData(
     context: Context,
     onClickDispensar: () -> Unit,
-    onClickDataSelecionada: (dataSelecionada: Date) -> Unit,
+    onClickDataSelecionada: (dataSelecionada: String) -> Unit,
 ) {
 
     val calendario = Calendar.getInstance()
-    val ano = calendario.get(Calendar.YEAR)
-    val mes = calendario.get(Calendar.MONTH)
-    val dia = calendario.get(Calendar.DAY_OF_MONTH)
+    val anoAtual = calendario.get(Calendar.YEAR)
+    val mesAtual = calendario.get(Calendar.MONTH)
+    val diaAtual = calendario.get(Calendar.DAY_OF_MONTH)
     calendario.time = Date()
 
     val datePickerDialog = DatePickerDialog(
-        context, { _: DatePicker, _, _, _ ->
+        context, { _: DatePicker, ano, mes, dia ->
             calendario.set(ano, mes, dia)
             val dataSelecionada = calendario.time
-            onClickDataSelecionada(dataSelecionada)
-        }, ano, mes, dia
+            onClickDataSelecionada(dataSelecionada.converteParaString())
+        }, anoAtual, mesAtual, diaAtual
     )
 
     datePickerDialog.setOnDismissListener {
@@ -55,9 +56,11 @@ fun caixaDialogoData(
 
 @Composable
 fun CaixaDialogoImagem(
-    onClickDispensar: () -> Unit, onClickConfirmar: (urlImagem: String) -> Unit
+    imageAtual: String,
+    onClickDispensar: () -> Unit,
+    onClickSalvar: (urlImagem: String) -> Unit
 ) {
-    var urlImagem by remember { mutableStateOf("") }
+    var urlImagem by remember { mutableStateOf(imageAtual) }
 
     Dialog(onDismissRequest = { onClickDispensar() }, content = {
         Column(
@@ -97,7 +100,7 @@ fun CaixaDialogoImagem(
                     Text(text = stringResource(R.string.cancelar))
                 }
 
-                TextButton(onClick = { onClickConfirmar(urlImagem) }) {
+                TextButton(onClick = { onClickSalvar(urlImagem.toString()) }) {
                     Text(text = stringResource(R.string.salvar))
                 }
             }
@@ -109,5 +112,5 @@ fun CaixaDialogoImagem(
 @Preview
 @Composable
 fun CaixaDialogoImagemPreview() {
-    CaixaDialogoImagem({}, {})
+    CaixaDialogoImagem("", {}, {})
 }

@@ -24,40 +24,28 @@ class CadastroContatoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val idContato = intent.getLongExtra(CHAVE_CONTATO_ID, 0L)
-
         setContent {
             HelloAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    var contatoCarregado by remember { mutableStateOf(Contato()) }
+                    val idContato = carregaIdContato()
 
-                    val coroutineScope = rememberCoroutineScope()
-
-                    LaunchedEffect(coroutineScope) {
-                        contatoDao.buscaPorId(idContato).collect {
-                            it?.let { contatoCarregado = it }
-                            setContent {
-                                TelaCadastro(
-                                    contatoCarregado = contatoCarregado,
-                                    tituloAppBar = defineTituloAppBar(idContato),
-                                    onClickSalvar = { contato ->
-                                        lifecycleScope.launch {
-                                            contatoDao.insere(contato)
-                                        }
-                                        finish()
-                                    })
-                            }
-                        }
+                    setContent {
+                        TelaCadastro(
+                            viewModel = CadastroContatoViewModel(contatoDao, idContato),
+                            onClickSalvar = { contato ->
+                                lifecycleScope.launch {
+                                    contatoDao.insere(contato)
+                                }
+                                finish()
+                            })
                     }
+
                 }
             }
         }
     }
 
-    private fun defineTituloAppBar(idContato: Long): String {
-        return if (idContato == 0L) getString(R.string.title_activity_cadastro_contato)
-        else getString(R.string.title_activity_editar_contato)
-    }
+    private fun carregaIdContato() = intent.getLongExtra(CHAVE_CONTATO_ID, 0L)
 }

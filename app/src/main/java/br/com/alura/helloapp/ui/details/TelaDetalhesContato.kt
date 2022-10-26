@@ -5,6 +5,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,10 +17,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.sampleData.contatosExemplo
+import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
@@ -26,16 +30,21 @@ import coil.request.ImageRequest
 @Composable
 fun TelaDetalhesContato(
     modifier: Modifier = Modifier,
-    contato: Contato,
+    viewModel: DetalhesContatoViewlModel = viewModel(),
     onClickVoltar: () -> Unit,
     onClickApagar: () -> Unit,
     onClickEditar: () -> Unit
 ) {
+    val state by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             DetalhesContatoAppBar(
                 onClickVoltar = onClickVoltar,
-                onClickApagar = onClickApagar,
+                onClickApagar = {
+                    viewModel.removeCotato()
+                    onClickApagar()
+                },
                 onClickEditar = onClickEditar
             )
         },
@@ -52,14 +61,15 @@ fun TelaDetalhesContato(
                     .fillMaxWidth()
                     .height(250.dp),
                 contentScale = ContentScale.Crop,
-                model = ImageRequest.Builder(LocalContext.current).data(contato.fotoPerfil).build(),
+                model = ImageRequest.Builder(LocalContext.current).data(state.contato.fotoPerfil)
+                    .build(),
                 placeholder = painterResource(R.drawable.default_profile_picture),
                 error = painterResource(R.drawable.default_profile_picture),
                 contentDescription = stringResource(id = R.string.foto_perfil_contato),
             )
             Text(
                 modifier = Modifier.padding(vertical = 16.dp),
-                text = contato.nome,
+                text = state.contato.nome,
                 style = MaterialTheme.typography.h5
             )
 
@@ -120,7 +130,7 @@ fun TelaDetalhesContato(
                 )
 
                 Text(
-                    text = "${contato.nome} ${contato.sobrenome}",
+                    text = "${state.contato.nome} ${state.contato.sobrenome}",
                     style = MaterialTheme.typography.h6
                 )
                 Text(
@@ -131,7 +141,7 @@ fun TelaDetalhesContato(
                 )
 
                 Text(
-                    text = contato.telefone, style = MaterialTheme.typography.h6
+                    text = state.contato.telefone, style = MaterialTheme.typography.h6
                 )
                 Text(
                     modifier = Modifier
@@ -142,7 +152,7 @@ fun TelaDetalhesContato(
                     style = MaterialTheme.typography.body2
                 )
 
-                contato.aniversario?.let {
+                state.contato.aniversario?.let {
                     Text(
                         text = it.converteParaString(),
                         style = MaterialTheme.typography.h6
@@ -208,7 +218,7 @@ fun DetalhesContatoAppBar(
 fun DetalhesContatoScreenPreview() {
     TelaDetalhesContato(
         Modifier,
-        contatosExemplo.first(),
+        viewModel(),
         {}, {}, {}
     )
 }

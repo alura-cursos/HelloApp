@@ -10,6 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.sampleData.contatosExemplo
@@ -30,11 +33,14 @@ import coil.request.ImageRequest
 @Composable
 fun TelaPrincipal(
     modifier: Modifier = Modifier,
-    contatosBuscados: List<Contato>,
+    viewModel: PrincipalViewModel = viewModel(),
     onClickDeslogar: () -> Unit,
     onClickAbreDetalhes: (Contato) -> Unit,
-    onClickAbreCadastro: () -> Unit
-) {
+    onClickAbreCadastro: () -> Unit,
+
+    ) {
+    val state by viewModel.uiState.collectAsState()
+
     Scaffold(topBar = { AppBarPrincipal(onClickDeslogar = onClickDeslogar) },
         floatingActionButton = {
             FloatingActionButton(
@@ -47,7 +53,7 @@ fun TelaPrincipal(
             }
         }) { paddingValues ->
         LazyColumn(modifier.padding(paddingValues)) {
-            items(contatosBuscados) { contato ->
+            items(state.contatos) { contato ->
                 ContatoItem(contato) {
                     onClickAbreDetalhes(contato)
                 }
@@ -117,7 +123,7 @@ fun ContatoItem(
 @Preview
 @Composable
 fun TelaPrincipalPreview() {
-    TelaPrincipal(Modifier, contatosExemplo, {}, {}, {})
+    TelaPrincipal(Modifier, viewModel(), {}, {}, {})
 }
 
 @Preview

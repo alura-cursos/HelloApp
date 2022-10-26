@@ -25,7 +25,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.form.DetalhesContatoActivity"
+            android:name=".ui.details.DetalhesContatoActivity"
             android:exported="false"
             android:label="@string/title_activity_detalhes_contato"
             android:theme="@style/Theme.HelloApp">
