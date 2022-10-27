@@ -7,7 +7,7 @@ import br.com.alura.helloapp.converteParaDate
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
-import br.com.alura.helloapp.util.AuxilarStringResource
+import br.com.alura.helloapp.util.AuxilarRecursoString
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -82,10 +82,10 @@ class CadastroContatoViewModel(
     }
 
 
-    fun defineTituloAppBar(): AuxilarStringResource {
+    fun defineTituloAppBar(): AuxilarRecursoString {
         return if (idContato == 0L) {
-            AuxilarStringResource.StringResource(R.string.title_activity_cadastro_contato)
-        } else AuxilarStringResource.StringResource(R.string.title_activity_editar_contato)
+            AuxilarRecursoString.RecursoString(R.string.title_activity_cadastro_contato)
+        } else AuxilarRecursoString.RecursoString(R.string.title_activity_editar_contato)
     }
 
 

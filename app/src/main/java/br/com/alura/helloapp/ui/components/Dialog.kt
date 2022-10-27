@@ -29,15 +29,17 @@ import java.util.*
 
 fun caixaDialogoData(
     context: Context,
+    dataAtual: Date?,
     onClickDispensar: () -> Unit,
     onClickDataSelecionada: (dataSelecionada: String) -> Unit,
 ) {
-
     val calendario = Calendar.getInstance()
+
+    calendario.time = dataAtual ?: Date()
+
     val anoAtual = calendario.get(Calendar.YEAR)
     val mesAtual = calendario.get(Calendar.MONTH)
     val diaAtual = calendario.get(Calendar.DAY_OF_MONTH)
-    calendario.time = Date()
 
     val datePickerDialog = DatePickerDialog(
         context, { _: DatePicker, ano, mes, dia ->
@@ -62,50 +64,50 @@ fun CaixaDialogoImagem(
 ) {
     var urlImagem by remember { mutableStateOf(imageAtual) }
 
-    Dialog(onDismissRequest = { onClickDispensar() }, content = {
-        Column(
-            Modifier
-                .clip(RoundedCornerShape(5))
-                .heightIn(250.dp, 400.dp)
-                .widthIn(200.dp)
-                .background(Color.White)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    Dialog(
+        onDismissRequest = onClickDispensar,
+        content = {
+            Column(
+                Modifier
+                    .clip(RoundedCornerShape(5))
+                    .heightIn(250.dp, 400.dp)
+                    .widthIn(200.dp)
+                    .background(Color.White)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AsyncImagePerfil(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(5, 5)),
+                    urlImagem = urlImagem
+                )
 
-            AsyncImage(
-                modifier = Modifier
+                OutlinedTextField(modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(5, 5)),
-                contentScale = ContentScale.Crop,
-                model = ImageRequest.Builder(LocalContext.current).data(urlImagem).build(),
-                placeholder = painterResource(R.drawable.default_profile_picture),
-                error = painterResource(R.drawable.default_profile_picture),
-                contentDescription = stringResource(R.string.foto_perfil_contato),
-            )
+                    .padding(top = 16.dp)
+                    .heightIn(max = 80.dp),
+                    value = urlImagem,
+                    onValueChange = { urlImagem = it },
+                    label = { Text(stringResource(id = R.string.link_imagem)) })
 
-            OutlinedTextField(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-                .heightIn(max = 80.dp),
-                value = urlImagem,
-                onValueChange = { urlImagem = it },
-                label = { Text(stringResource(id = R.string.link_imagem)) })
+                Spacer(Modifier.height(16.dp))
 
-            Spacer(Modifier.height(16.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onClickDispensar) {
-                    Text(text = stringResource(R.string.cancelar))
-                }
-
-                TextButton(onClick = { onClickSalvar(urlImagem.toString()) }) {
-                    Text(text = stringResource(R.string.salvar))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onClickDispensar) {
+                        Text(text = stringResource(R.string.cancelar))
+                    }
+                    TextButton(onClick = { onClickSalvar(urlImagem.toString()) }) {
+                        Text(text = stringResource(R.string.salvar))
+                    }
                 }
             }
         }
-    })
+    )
 }
 
 

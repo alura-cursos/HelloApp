@@ -1,4 +1,4 @@
-package br.com.alura.helloapp.ui.form
+package br.com.alura.helloapp.ui.details
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -20,10 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaString
-import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
+import br.com.alura.helloapp.ui.components.AsyncImagePerfil
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-
 
 @Composable
 fun DetalhesContatoTela(
@@ -54,16 +53,11 @@ fun DetalhesContatoTela(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            AsyncImage(
+            AsyncImagePerfil(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp),
-                contentScale = ContentScale.Crop,
-                model = ImageRequest.Builder(LocalContext.current).data(state.contato.fotoPerfil)
-                    .build(),
-                placeholder = painterResource(R.drawable.default_profile_picture),
-                error = painterResource(R.drawable.default_profile_picture),
-                contentDescription = stringResource(id = R.string.foto_perfil_contato),
+                urlImagem = state.contato.fotoPerfil
             )
             Text(
                 modifier = Modifier.padding(vertical = 16.dp),
@@ -91,7 +85,8 @@ fun DetalhesContatoTela(
                         tint = MaterialTheme.colors.primary
                     )
                     Text(
-                        text = stringResource(R.string.ligar), color = MaterialTheme.colors.primary
+                        text = stringResource(R.string.ligar),
+                        color = MaterialTheme.colors.primary
                     )
                 }
                 Column(
@@ -112,6 +107,7 @@ fun DetalhesContatoTela(
                     )
                 }
             }
+
             Divider(thickness = 1.dp)
 
             Column(
@@ -139,7 +135,8 @@ fun DetalhesContatoTela(
                 )
 
                 Text(
-                    text = state.contato.telefone, style = MaterialTheme.typography.h6
+                    text = state.contato.telefone,
+                    style = MaterialTheme.typography.h6
                 )
                 Text(
                     modifier = Modifier
@@ -162,7 +159,6 @@ fun DetalhesContatoTela(
                         style = MaterialTheme.typography.body2
                     )
                 }
-
             }
         }
     }

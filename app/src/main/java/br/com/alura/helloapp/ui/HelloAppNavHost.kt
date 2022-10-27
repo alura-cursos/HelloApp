@@ -16,7 +16,7 @@ import br.com.alura.helloapp.extensions.mostraMensagem
 import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import br.com.alura.helloapp.ui.form.CadastroContatoTela
 import br.com.alura.helloapp.ui.form.CadastroContatoViewModel
-import br.com.alura.helloapp.ui.form.DetalhesContatoTela
+import br.com.alura.helloapp.ui.details.DetalhesContatoTela
 import br.com.alura.helloapp.ui.home.ListaContatosTela
 import br.com.alura.helloapp.ui.home.ListaContatosViewModel
 
@@ -41,7 +41,7 @@ fun HelloAppNavHost(
                         .navegaParaDetalhes(it.id)
                 },
                 onClickAbreCadastro = {
-                    navController.navegaCadastro()
+                    navController.navegaParaCadastro()
                 })
         }
 
@@ -75,9 +75,8 @@ fun HelloAppNavHost(
                     context.mostraMensagem(context.getString(R.string.contato_apagado))
                     navController.navigateUp()
                 },
-                onClickEditar = { navController.navegaCadastro(idContato) })
+                onClickEditar = { navController.navegaParaCadastro(idContato) })
         }
-
     }
 }
 
@@ -95,6 +94,6 @@ fun NavHostController.navegaParaDetalhes(idContato: Long) {
     this.navegaDiretoAoTopo("${DetalhesContato.rota}/$idContato")
 }
 
-fun NavHostController.navegaCadastro(idContato: Long = 0L) {
+fun NavHostController.navegaParaCadastro(idContato: Long = 0L) {
     this.navigate("${CadastroContato.rota}/$idContato")
 }

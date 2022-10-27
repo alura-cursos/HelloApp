@@ -12,7 +12,6 @@ var contatosExemplo: List<Contato> = listOf(
 
         ),
     Contato(
-
         nome = "Bill",
         sobrenome = "Lima",
         telefone = "321",
@@ -23,6 +22,6 @@ var contatosExemplo: List<Contato> = listOf(
         nome = "Odes",
         sobrenome = "Conhecido",
         telefone = "321",
-        fotoPerfil = "urlTeste2"
+        fotoPerfil = "urlTesteParaDarErro"
     )
 )

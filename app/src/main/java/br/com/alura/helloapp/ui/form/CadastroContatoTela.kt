@@ -33,7 +33,6 @@ import br.com.alura.helloapp.ui.components.caixaDialogoData
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
-
 @Composable
 fun CadastroContatoTela(
     modifier: Modifier = Modifier,
@@ -43,7 +42,7 @@ fun CadastroContatoTela(
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = { CadastroAppBar(viewModel.defineTituloAppBar().asString()) },
+        topBar = { CadastroContatoAppBar(viewModel.defineTituloAppBar().asString()) },
     ) { paddingValues ->
 
         val context = LocalContext.current
@@ -165,7 +164,6 @@ fun CadastroContatoTela(
                                 aniversario = state.contato.aniversario
                             )
                         )
-
                     }
                 ) {
                     Text(text = stringResource(R.string.salvar))
@@ -187,6 +185,7 @@ fun CadastroContatoTela(
             if (state.mostrarCaixaDialogoData) {
                 caixaDialogoData(
                     context,
+                    dataAtual = state.contato.aniversario,
                     onClickDispensar = { viewModel.fecharCaixaData() },
                     onClickDataSelecionada = state.onAniversarioMudou
                 )
@@ -196,7 +195,7 @@ fun CadastroContatoTela(
 }
 
 @Composable
-fun CadastroAppBar(tituloApprBar: String) {
+fun CadastroContatoAppBar(tituloApprBar: String) {
     TopAppBar(
         title = { Text(text = tituloApprBar) },
     )
@@ -208,5 +207,6 @@ fun TelaCadastroPreview() {
     CadastroContatoTela(
         Modifier,
         viewModel(),
-    ) {}
+        {}
+    )
 }

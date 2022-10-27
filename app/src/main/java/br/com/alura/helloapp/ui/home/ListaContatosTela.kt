@@ -16,34 +16,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.sampleData.contatosExemplo
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import br.com.alura.helloapp.ui.components.AsyncImagePerfil
 
 @Composable
 fun ListaContatosTela(
     modifier: Modifier = Modifier,
     viewModel: ListaContatosViewModel = viewModel(),
-
     onClickDeslogar: () -> Unit,
     onClickAbreDetalhes: (Contato) -> Unit,
     onClickAbreCadastro: () -> Unit,
-
-    ) {
+) {
     val state by viewModel.uiState.collectAsState()
 
-    Scaffold(topBar = { AppBarPrincipal(onClickDeslogar = onClickDeslogar) },
+    Scaffold(
+        topBar = { AppBarListaContatos(onClickDeslogar = onClickDeslogar) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onClickAbreCadastro() },
@@ -66,18 +60,21 @@ fun ListaContatosTela(
 }
 
 @Composable
-fun AppBarPrincipal(onClickDeslogar: () -> Unit) {
-    TopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) }, actions = {
-        IconButton(
-            onClick = onClickDeslogar
-        ) {
-            Icon(
-                imageVector = Icons.Default.ExitToApp,
-                tint = Color.White,
-                contentDescription = stringResource(R.string.deslogar)
-            )
+fun AppBarListaContatos(onClickDeslogar: () -> Unit) {
+    TopAppBar(
+        title = { Text(text = stringResource(id = R.string.app_name)) },
+        actions = {
+            IconButton(
+                onClick = onClickDeslogar
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ExitToApp,
+                    tint = Color.White,
+                    contentDescription = stringResource(R.string.deslogar)
+                )
+            }
         }
-    })
+    )
 }
 
 @Composable
@@ -92,16 +89,12 @@ fun ContatoItem(
         Row(
             Modifier.padding(16.dp),
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(contato.fotoPerfil).build(),
-                placeholder = painterResource(R.drawable.default_profile_picture),
-                error = painterResource(R.drawable.default_profile_picture),
-                contentDescription = stringResource(id = R.string.foto_perfil_contato),
-                contentScale = ContentScale.Crop,
+
+            AsyncImagePerfil(
                 modifier = Modifier
                     .size(48.dp)
-                    .clip(CircleShape)
-
+                    .clip(CircleShape),
+                urlImagem = contato.fotoPerfil
             )
 
             Column(
@@ -125,8 +118,8 @@ fun ContatoItem(
 
 @Preview
 @Composable
-fun TelaPrincipalPreview() {
-//    TelaPrincipal(Modifier, viewModel(),{}, {}, {})
+fun ListaContatosPreview() {
+    ListaContatosTela(Modifier, viewModel(), {}, {}, {})
 }
 
 @Preview

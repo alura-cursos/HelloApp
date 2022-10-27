@@ -13,5 +13,3 @@ object PreferencesKeys {
     val NOME_USUARIO = stringPreferencesKey("nome_usuario")
     val USUARIO_LOGADO = booleanPreferencesKey("usuario_logado")
 }
-
-// Padrão de código, retirado do Android Developers no YouTube: https://youtu.be/kp53qL_O5gk?t=184
