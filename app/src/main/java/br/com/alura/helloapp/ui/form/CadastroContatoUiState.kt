@@ -1,5 +1,6 @@
 package br.com.alura.helloapp.ui.form
 
+import androidx.annotation.StringRes
 import br.com.alura.helloapp.data.Contato
 
 data class CadastroContatoUiState(
@@ -11,6 +12,7 @@ data class CadastroContatoUiState(
     val onTelefoneMudou: (String) -> Unit = {},
     val onFotoPerfilMudou: (String) -> Unit = {},
     val onAniversarioMudou: (String) -> Unit = {},
-    var textoAniversairo: String = ""
+    var textoAniversairo: String = "",
+    @StringRes val tituloAppbar: Int? = null
 ) {
 }

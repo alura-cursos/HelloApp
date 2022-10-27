@@ -7,7 +7,6 @@ import br.com.alura.helloapp.converteParaDate
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
-import br.com.alura.helloapp.util.AuxilarRecursoString
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -17,7 +16,7 @@ class CadastroContatoViewModel(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CadastroContatoUiState())
-    val uiState: StateFlow<CadastroContatoUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<CadastroContatoUiState> get() = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -25,7 +24,13 @@ class CadastroContatoViewModel(
         }
 
         _uiState.update { state ->
+
             state.copy(
+
+                tituloAppbar = if (idContato == 0L) {
+                    R.string.title_activity_cadastro_contato
+                } else R.string.title_activity_editar_contato,
+
                 onNomeMudou = {
                     _uiState.value = _uiState.value.copy(
                         _uiState.value.contato.copy(nome = it)
@@ -48,7 +53,7 @@ class CadastroContatoViewModel(
                 },
                 onAniversarioMudou = {
                     _uiState.value = _uiState.value.copy(
-                        _uiState.value.contato.copy(aniversario = it.converteParaDate())
+                        contato = _uiState.value.contato.copy(aniversario = it.converteParaDate())
                     )
                     fecharCaixaData()
                 },
@@ -60,9 +65,9 @@ class CadastroContatoViewModel(
 
     private suspend fun carregaContato() {
         contatoDao.buscaPorId(idContato).collect {
-            it?.let {
+            it?.let { contatoEncontrado ->
                 _uiState.value = _uiState.value.copy(
-                    contato = it.copy()
+                    contato = contatoEncontrado
                 )
             }
         }
@@ -82,10 +87,8 @@ class CadastroContatoViewModel(
     }
 
 
-    fun defineTituloAppBar(): AuxilarRecursoString {
-        return if (idContato == 0L) {
-            AuxilarRecursoString.RecursoString(R.string.title_activity_cadastro_contato)
-        } else AuxilarRecursoString.RecursoString(R.string.title_activity_editar_contato)
+    fun defineTituloAppBar() {
+        return
     }
 
 
@@ -120,4 +123,5 @@ class CadastroContatoViewModel(
             it.copy(mostrarCaixaDialogoData = false)
         }
     }
+
 }

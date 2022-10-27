@@ -32,6 +32,7 @@ import br.com.alura.helloapp.ui.components.CaixaDialogoImagem
 import br.com.alura.helloapp.ui.components.caixaDialogoData
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun CadastroContatoTela(
@@ -41,11 +42,14 @@ fun CadastroContatoTela(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        topBar = { CadastroContatoAppBar(viewModel.defineTituloAppBar().asString()) },
-    ) { paddingValues ->
+    Scaffold (
+        topBar = {
+            state.tituloAppbar?.let { titulo ->
+                CadastroContatoAppBar(stringResource(id = titulo))
+            }
+        },
 
-        val context = LocalContext.current
+        ) { paddingValues ->
 
         Column(
             modifier
@@ -171,8 +175,8 @@ fun CadastroContatoTela(
             }
 
             if (state.mostrarCaixaDialogoImagem) {
-                CaixaDialogoImagem(
-                    state.contato.fotoPerfil,
+                CaixaDialogoImagem(state.contato.fotoPerfil,
+                    onFotoPerfilMudou = state.onFotoPerfilMudou,
                     onClickDispensar = {
                         viewModel.fecharCaixaImagem()
                     },
@@ -184,7 +188,7 @@ fun CadastroContatoTela(
 
             if (state.mostrarCaixaDialogoData) {
                 caixaDialogoData(
-                    context,
+                    LocalContext.current,
                     dataAtual = state.contato.aniversario,
                     onClickDispensar = { viewModel.fecharCaixaData() },
                     onClickDataSelecionada = state.onAniversarioMudou
