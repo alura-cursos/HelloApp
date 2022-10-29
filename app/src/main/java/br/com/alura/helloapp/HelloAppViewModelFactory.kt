@@ -8,7 +8,7 @@ import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 
 @Suppress("UNCHECKED_CAST")
-fun helloAppFactory(idContato: Long): ViewModelProvider.Factory {
+fun helloAppViewModelFactory(idContato: Long): ViewModelProvider.Factory {
     return object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(
             modelClass: Class<T>,

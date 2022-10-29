@@ -30,15 +30,16 @@ import br.com.alura.helloapp.ui.components.AsyncImagePerfil
 fun ListaContatosTela(
     modifier: Modifier = Modifier,
     viewModel: ListaContatosViewModel = viewModel(),
-    onClickDeslogar: () -> Unit = {},
+    onClickDesloga: () -> Unit = {},
     onClickAbreDetalhes: (Long) -> Unit = {},
     onClickAbreCadastro: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+
     ListaContatosTela(
         modifier = modifier,
         state = state,
-        onClickDeslogar = onClickDeslogar,
+        onClickDesloga = onClickDesloga,
         onClickAbreDetalhes = onClickAbreDetalhes,
         onClickAbreCadastro = onClickAbreCadastro
     )
@@ -48,12 +49,12 @@ fun ListaContatosTela(
 fun ListaContatosTela(
     modifier: Modifier = Modifier,
     state: ListaContatosUiState,
-    onClickDeslogar: () -> Unit = {},
+    onClickDesloga: () -> Unit = {},
     onClickAbreDetalhes: (Long) -> Unit = {},
     onClickAbreCadastro: () -> Unit = {}
 ) {
     Scaffold(
-        topBar = { AppBarListaContatos(onClickDeslogar = onClickDeslogar) },
+        topBar = { AppBarListaContatos(onClickDesloga = onClickDesloga) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onClickAbreCadastro() },
@@ -76,12 +77,12 @@ fun ListaContatosTela(
 }
 
 @Composable
-fun AppBarListaContatos(onClickDeslogar: () -> Unit) {
+fun AppBarListaContatos(onClickDesloga: () -> Unit) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
         actions = {
             IconButton(
-                onClick = onClickDeslogar
+                onClick = onClickDesloga
             ) {
                 Icon(
                     imageVector = Icons.Default.ExitToApp,
@@ -111,7 +112,6 @@ fun ContatoItem(
                     .size(48.dp)
                     .clip(CircleShape)
             )
-
             Column(
                 Modifier
                     .padding(start = 8.dp)

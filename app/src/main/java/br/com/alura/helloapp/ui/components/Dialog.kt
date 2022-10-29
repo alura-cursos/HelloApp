@@ -19,14 +19,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.alura.helloapp.R
-import br.com.alura.helloapp.converteParaString
+import br.com.alura.helloapp.extensions.converteParaString
 import java.util.*
 
 fun caixaDialogoData(
     context: Context,
     dataAtual: Date?,
     onClickDispensar: () -> Unit = {},
-    onClickDataSelecionada: (dataSelecionada: String) -> Unit = {},
+    onClickDataSelecionada: (dataSelecionada: String) -> Unit = {}
 ) {
     val calendario = Calendar.getInstance()
 
@@ -50,20 +50,19 @@ fun caixaDialogoData(
     datePickerDialog.show()
 }
 
-
 @Composable
 fun CaixaDialogoImagem(
     fotoPerfil: String,
+    modifier: Modifier = Modifier,
     onFotoPerfilMudou: (String) -> Unit = {},
     onClickDispensar: () -> Unit = {},
-    onClickSalvar: (urlImagem: String) -> Unit = {},
+    onClickSalvar: (urlImagem: String) -> Unit = {}
 ) {
-
     Dialog(
         onDismissRequest = onClickDispensar,
         content = {
             Column(
-                Modifier
+                modifier
                     .clip(RoundedCornerShape(5))
                     .heightIn(250.dp, 400.dp)
                     .widthIn(200.dp)
@@ -104,7 +103,6 @@ fun CaixaDialogoImagem(
         }
     )
 }
-
 
 @Preview
 @Composable

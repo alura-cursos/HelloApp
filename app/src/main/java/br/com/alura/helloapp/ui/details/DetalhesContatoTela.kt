@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
-import br.com.alura.helloapp.converteParaString
+import br.com.alura.helloapp.extensions.converteParaString
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
 
 @Composable
@@ -66,14 +66,14 @@ fun DetalhesContatoTela(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AsyncImagePerfil(
-                urlImagem = state.contato.fotoPerfil,
+                urlImagem = state.fotoPerfil,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
             )
             Text(
                 modifier = Modifier.padding(vertical = 16.dp),
-                text = state.contato.nome,
+                text = state.nome,
                 style = MaterialTheme.typography.h5
             )
 
@@ -136,7 +136,7 @@ fun DetalhesContatoTela(
                 )
 
                 Text(
-                    text = "${state.contato.nome} ${state.contato.sobrenome}",
+                    text = "${state.nome} ${state.sobrenome}",
                     style = MaterialTheme.typography.h6
                 )
                 Text(
@@ -147,7 +147,7 @@ fun DetalhesContatoTela(
                 )
 
                 Text(
-                    text = state.contato.telefone,
+                    text = state.telefone,
                     style = MaterialTheme.typography.h6
                 )
                 Text(
@@ -159,7 +159,7 @@ fun DetalhesContatoTela(
                     style = MaterialTheme.typography.body2
                 )
 
-                state.contato.aniversario?.let {
+                state.aniversario?.let {
                     Text(
                         text = it.converteParaString(),
                         style = MaterialTheme.typography.h6

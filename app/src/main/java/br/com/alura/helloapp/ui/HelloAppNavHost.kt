@@ -9,19 +9,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import br.com.alura.helloapp.*
 import br.com.alura.helloapp.ui.details.DetalhesContatoTela
-import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import br.com.alura.helloapp.ui.form.FormularioContatoTela
-import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 import br.com.alura.helloapp.ui.home.ListaContatosFactory
 import br.com.alura.helloapp.ui.home.ListaContatosTela
-
 
 @Composable
 fun HelloAppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     onContatoApagado: () -> Unit = {}
-
 ) {
     NavHost(
         navController = navController,
@@ -31,7 +27,7 @@ fun HelloAppNavHost(
         composable(route = ListaContatos.rota) {
             ListaContatosTela(
                 viewModel = viewModel(factory = ListaContatosFactory()),
-                onClickDeslogar = {},
+                onClickDesloga = {},
                 onClickAbreDetalhes = { idContato ->
                     navController
                         .navegaParaDetalhes(idContato)
@@ -47,14 +43,10 @@ fun HelloAppNavHost(
         ) { navBackStackEntry ->
 
             navBackStackEntry.arguments?.getLong(
-                DetalhesContato.idContato, 0L
+                DetalhesContato.idContato
             )?.let { idContato ->
-
-                val viewModelTeste: FormularioContatoViewModel =
-                    viewModel(factory = helloAppFactory(idContato))
-
                 FormularioContatoTela(
-                    viewModel = viewModelTeste,
+                    viewModel = viewModel(factory = helloAppViewModelFactory(idContato)),
                     onClickSalvar = {
                         navController.navigateUp()
                     })
@@ -65,22 +57,19 @@ fun HelloAppNavHost(
             route = DetalhesContato.rotaComArgumentos,
             arguments = DetalhesContato.argumentos
         ) { navBackStackEntry ->
-            val idContato: Long =
-                navBackStackEntry.arguments?.getLong(DetalhesContato.idContato, 0L)!!
 
-            val viewModelTeste: DetalhesContatoViewlModel =
-                viewModel(factory = helloAppFactory(idContato))
-
-            // viewModel = viewModel(factory = DetalhesContatoFactory(idContato)),
-
-            DetalhesContatoTela(
-                viewModel = viewModelTeste,
-                onClickVoltar = { navController.navigateUp() },
-                onClickApagar = {
-                    onContatoApagado()
-                    navController.navigateUp()
-                },
-                onClickEditar = { navController.navegaParaFormularioContato(idContato) })
+            navBackStackEntry.arguments?.getLong(
+                DetalhesContato.idContato
+            )?.let { idContato ->
+                DetalhesContatoTela(
+                    viewModel = viewModel(factory = helloAppViewModelFactory(idContato)),
+                    onClickVoltar = { navController.navigateUp() },
+                    onClickApagar = {
+                        onContatoApagado()
+                        navController.navigateUp()
+                    },
+                    onClickEditar = { navController.navegaParaFormularioContato(idContato) })
+            }
         }
     }
 }

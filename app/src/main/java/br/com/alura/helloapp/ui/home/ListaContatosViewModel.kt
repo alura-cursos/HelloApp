@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import br.com.alura.helloapp.HelloAppAplication
 import br.com.alura.helloapp.database.ContatoDao
-import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,9 +42,9 @@ class ListaContatosFactory :
         modelClass: Class<T>,
         extras: CreationExtras
     ): T {
-        val appAplication = checkNotNull(extras[APPLICATION_KEY])
+        val application = checkNotNull(extras[APPLICATION_KEY])
         return ListaContatosViewModel(
-            (appAplication as HelloAppAplication).database.contatoDao(),
+            (application as HelloAppAplication).database.contatoDao(),
         ) as T
     }
 }

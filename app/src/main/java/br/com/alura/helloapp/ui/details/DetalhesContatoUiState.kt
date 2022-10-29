@@ -1,7 +1,12 @@
 package br.com.alura.helloapp.ui.details
 
-import br.com.alura.helloapp.data.Contato
+import java.util.*
 
 data class DetalhesContatoUiState(
-    val contato: Contato = Contato()
+    val id: Long = 0L,
+    val nome: String = "",
+    val sobrenome: String = "",
+    val telefone: String = "",
+    val fotoPerfil: String = "",
+    val aniversario: Date? = null,
 )

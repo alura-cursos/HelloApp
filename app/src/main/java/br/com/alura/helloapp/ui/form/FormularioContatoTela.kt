@@ -10,7 +10,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,7 +27,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.ui.components.CaixaDialogoImagem
 import br.com.alura.helloapp.ui.components.caixaDialogoData
@@ -39,30 +40,31 @@ fun FormularioContatoTela(
     onClickSalvar: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+
     FormularioContatoTela(
         modifier = modifier,
         state = state,
         onClickSalvar = {
             onClickSalvar()
-            viewModel.salvarContato()
+            viewModel.salvaContato()
         },
         onMostrarCaixaImagem = {
-            viewModel.mostrarCaixaImagem()
+            viewModel.mostraCaixaImagem()
         },
         onMostrarCaixaData = {
-            viewModel.mostrarCaixaData()
+            viewModel.mostraCaixaData()
         },
         onFecharCaixaData = {
-            viewModel.fecharCaixaData()
+            viewModel.fechaCaixaData()
         },
         textoAniversario = viewModel.defineTextoAniversario(
             stringResource(id = R.string.aniversario)
         ),
         onFecharCaixaImagem = {
-            viewModel.fecharCaixaImagem()
+            viewModel.fechaCaixaImagem()
         },
         onCarregarImagem = {
-            viewModel.carregarImagem(it)
+            viewModel.carregaImagem(it)
         })
 
 }
@@ -78,7 +80,6 @@ fun FormularioContatoTela(
     textoAniversario: String,
     onFecharCaixaImagem: () -> Unit = {},
     onCarregarImagem: (String) -> Unit = {}
-
 ) {
     Scaffold(
         topBar = {
@@ -109,7 +110,7 @@ fun FormularioContatoTela(
                             onMostrarCaixaImagem()
                         },
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(state.contato.fotoPerfil).build(),
+                        .data(state.fotoPerfil).build(),
                     placeholder = painterResource(R.drawable.default_profile_picture),
                     error = painterResource(R.drawable.default_profile_picture),
                     contentScale = ContentScale.Crop,
@@ -135,7 +136,7 @@ fun FormularioContatoTela(
                             contentDescription = null
                         )
                     },
-                    value = state.contato.nome,
+                    value = state.nome,
                     onValueChange = state.onNomeMudou,
                     label = { Text(stringResource(id = R.string.nome)) },
                     keyboardOptions = KeyboardOptions(
@@ -147,7 +148,7 @@ fun FormularioContatoTela(
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = state.contato.sobrenome,
+                    value = state.sobrenome,
                     onValueChange = state.onSobrenomeMudou,
                     label = { Text(stringResource(id = R.string.sobrenome)) },
                     keyboardOptions = KeyboardOptions(
@@ -165,7 +166,7 @@ fun FormularioContatoTela(
                             contentDescription = null
                         )
                     },
-                    value = state.contato.telefone,
+                    value = state.telefone,
                     onValueChange = state.onTelefoneMudou,
                     label = { Text(stringResource(id = R.string.telefone)) },
                     keyboardOptions = KeyboardOptions(
@@ -202,7 +203,7 @@ fun FormularioContatoTela(
 
             if (state.mostrarCaixaDialogoImagem) {
                 CaixaDialogoImagem(
-                    state.contato.fotoPerfil,
+                    state.fotoPerfil,
                     onFotoPerfilMudou = state.onFotoPerfilMudou,
                     onClickDispensar = onFecharCaixaImagem,
                     onClickSalvar = { onCarregarImagem(it) }
@@ -212,7 +213,7 @@ fun FormularioContatoTela(
             if (state.mostrarCaixaDialogoData) {
                 caixaDialogoData(
                     LocalContext.current,
-                    dataAtual = state.contato.aniversario,
+                    dataAtual = state.aniversario,
                     onClickDispensar = onFecharCaixaData,
                     onClickDataSelecionada = state.onAniversarioMudou
                 )

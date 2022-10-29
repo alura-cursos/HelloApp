@@ -5,16 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.rememberNavController
 import br.com.alura.helloapp.R
-import br.com.alura.helloapp.database.HelloAppDatabase
 import br.com.alura.helloapp.extensions.mostraMensagem
 import br.com.alura.helloapp.ui.HelloAppNavHost
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 
 class ListaContatosActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             HelloAppTheme {
                 val navController = rememberNavController()

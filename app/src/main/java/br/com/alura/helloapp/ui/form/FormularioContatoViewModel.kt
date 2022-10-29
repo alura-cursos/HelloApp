@@ -1,20 +1,16 @@
 package br.com.alura.helloapp.ui.form
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import br.com.alura.helloapp.HelloAppAplication
 import br.com.alura.helloapp.R
-import br.com.alura.helloapp.converteParaDate
-import br.com.alura.helloapp.converteParaString
+import br.com.alura.helloapp.extensions.converteParaDate
+import br.com.alura.helloapp.extensions.converteParaString
+import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
-import br.com.alura.helloapp.database.HelloAppDatabase
-import br.com.alura.helloapp.ui.home.ListaContatosViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FormularioContatoViewModel(
@@ -32,7 +28,6 @@ class FormularioContatoViewModel(
         }
 
         _uiState.update { state ->
-
             state.copy(
                 tituloAppbar = if (idContato == 0L) {
                     R.string.titulo_activity_cadastro_contato
@@ -40,105 +35,105 @@ class FormularioContatoViewModel(
 
                 onNomeMudou = {
                     _uiState.value = _uiState.value.copy(
-                        _uiState.value.contato.copy(nome = it)
+                        nome = it
                     )
+
                 },
                 onSobrenomeMudou = {
                     _uiState.value = _uiState.value.copy(
-                        _uiState.value.contato.copy(sobrenome = it)
+                        sobrenome = it
                     )
                 },
                 onTelefoneMudou = {
                     _uiState.value = _uiState.value.copy(
-                        _uiState.value.contato.copy(telefone = it)
+                        telefone = it
                     )
                 },
                 onFotoPerfilMudou = {
                     _uiState.value = _uiState.value.copy(
-                        _uiState.value.contato.copy(fotoPerfil = it)
+                        fotoPerfil = it
                     )
                 },
                 onAniversarioMudou = {
                     _uiState.value = _uiState.value.copy(
-                        contato = _uiState.value.contato.copy(aniversario = it.converteParaDate())
+                        aniversario = it.converteParaDate()
                     )
-                    fecharCaixaData()
+                    fechaCaixaData()
                 },
-
-                )
+            )
         }
-
     }
 
     private suspend fun carregaContato() {
         contatoDao.buscaPorId(idContato).collect {
             it?.let { contatoEncontrado ->
-                _uiState.value = _uiState.value.copy(
-                    contato = contatoEncontrado
+                with(contatoEncontrado) {
+                    _uiState.value = _uiState.value.copy(
+                        id = id,
+                        nome = nome,
+                        sobrenome = sobrenome,
+                        telefone = telefone,
+                        fotoPerfil = fotoPerfil,
+                        aniversario = aniversario
+                    )
+                }
+            }
+        }
+    }
+
+    fun salvaContato() {
+        viewModelScope.launch {
+            with(_uiState.value) {
+                contatoDao.insere(
+                    Contato(
+                        id = id,
+                        nome = nome,
+                        sobrenome = sobrenome,
+                        telefone = telefone,
+                        fotoPerfil = fotoPerfil,
+                        aniversario = aniversario
+                    )
                 )
             }
         }
     }
 
-    fun salvarContato() {
-        viewModelScope.launch {
-            contatoDao.insere(_uiState.value.contato)
-        }
-    }
-
     fun defineTextoAniversario(textoAniversario: String): String {
-        _uiState.value.contato.aniversario?.let {
+        _uiState.value.aniversario?.let {
             return it.converteParaString()
         }
         return textoAniversario
     }
 
-    fun carregarImagem(url: String) {
+    fun carregaImagem(url: String) {
         _uiState.value = _uiState.value.copy(
-            _uiState.value.contato.copy(fotoPerfil = url)
+            fotoPerfil = url
         )
-        fecharCaixaImagem()
+        fechaCaixaImagem()
     }
 
 
-    fun mostrarCaixaImagem() {
+    fun mostraCaixaImagem() {
         _uiState.update {
             it.copy(mostrarCaixaDialogoImagem = true)
         }
     }
 
-    fun fecharCaixaImagem() {
+    fun fechaCaixaImagem() {
         _uiState.update {
             it.copy(mostrarCaixaDialogoImagem = false)
         }
     }
 
-    fun mostrarCaixaData() {
+    fun mostraCaixaData() {
         _uiState.update {
             it.copy(mostrarCaixaDialogoData = true)
         }
     }
 
-    fun fecharCaixaData() {
+    fun fechaCaixaData() {
         _uiState.update {
             it.copy(mostrarCaixaDialogoData = false)
         }
     }
 }
-
-
-@Suppress("UNCHECKED_CAST")
-class FormularioContatoFactory(private val idContato: Long) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(
-        modelClass: Class<T>,
-        extras: CreationExtras
-    ): T {
-        val appAplication = checkNotNull(extras[APPLICATION_KEY])
-        return FormularioContatoViewModel(
-            (appAplication as HelloAppAplication).database.contatoDao(),
-            idContato
-        ) as T
-    }
-}
-
