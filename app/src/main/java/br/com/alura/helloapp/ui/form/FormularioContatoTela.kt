@@ -27,25 +27,63 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
-import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.ui.components.CaixaDialogoImagem
 import br.com.alura.helloapp.ui.components.caixaDialogoData
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun CadastroContatoTela(
+fun FormularioContatoTela(
     modifier: Modifier = Modifier,
-    viewModel: CadastroContatoViewModel = viewModel(),
-    onClickSalvar: () -> Unit
+    viewModel: FormularioContatoViewModel = viewModel(),
+    onClickSalvar: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    FormularioContatoTela(
+        modifier = modifier,
+        state = state,
+        onClickSalvar = {
+            onClickSalvar()
+            viewModel.salvarContato()
+        },
+        onMostrarCaixaImagem = {
+            viewModel.mostrarCaixaImagem()
+        },
+        onMostrarCaixaData = {
+            viewModel.mostrarCaixaData()
+        },
+        onFecharCaixaData = {
+            viewModel.fecharCaixaData()
+        },
+        textoAniversario = viewModel.defineTextoAniversario(
+            stringResource(id = R.string.aniversario)
+        ),
+        onFecharCaixaImagem = {
+            viewModel.fecharCaixaImagem()
+        },
+        onCarregarImagem = {
+            viewModel.carregarImagem(it)
+        })
 
-    Scaffold (
+}
+
+@Composable
+fun FormularioContatoTela(
+    modifier: Modifier = Modifier,
+    state: FormularioContatoUiState,
+    onClickSalvar: () -> Unit = {},
+    onMostrarCaixaImagem: () -> Unit = {},
+    onMostrarCaixaData: () -> Unit = {},
+    onFecharCaixaData: () -> Unit = {},
+    textoAniversario: String,
+    onFecharCaixaImagem: () -> Unit = {},
+    onCarregarImagem: (String) -> Unit = {}
+
+) {
+    Scaffold(
         topBar = {
             state.tituloAppbar?.let { titulo ->
-                CadastroContatoAppBar(stringResource(id = titulo))
+                FormularioContatoAppBar(stringResource(id = titulo))
             }
         },
 
@@ -68,7 +106,7 @@ fun CadastroContatoTela(
                         .size(180.dp)
                         .clip(CircleShape)
                         .clickable {
-                            viewModel.abriCaixaImagem()
+                            onMostrarCaixaImagem()
                         },
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(state.contato.fotoPerfil).build(),
@@ -138,7 +176,7 @@ fun CadastroContatoTela(
                 )
 
                 OutlinedButton(
-                    onClick = { viewModel.mostrarCaixaData() },
+                    onClick = onMostrarCaixaData,
                     modifier = Modifier.fillMaxWidth()
 
                 ) {
@@ -147,7 +185,7 @@ fun CadastroContatoTela(
                         contentDescription = null,
                         Modifier.padding(8.dp)
                     )
-                    Text(text = viewModel.defineTextoAniversario(stringResource(id = R.string.aniversario)))
+                    Text(text = textoAniversario)
                 }
 
                 Spacer(Modifier.height(16.dp))
@@ -156,33 +194,18 @@ fun CadastroContatoTela(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(56.dp),
-                    onClick = {
-                        onClickSalvar()
-                        viewModel.salvarContato(
-                            Contato(
-                                state.contato.id,
-                                nome = state.contato.nome,
-                                sobrenome = state.contato.sobrenome,
-                                telefone = state.contato.telefone,
-                                fotoPerfil = state.contato.fotoPerfil,
-                                aniversario = state.contato.aniversario
-                            )
-                        )
-                    }
+                    onClick = onClickSalvar
                 ) {
                     Text(text = stringResource(R.string.salvar))
                 }
             }
 
             if (state.mostrarCaixaDialogoImagem) {
-                CaixaDialogoImagem(state.contato.fotoPerfil,
+                CaixaDialogoImagem(
+                    state.contato.fotoPerfil,
                     onFotoPerfilMudou = state.onFotoPerfilMudou,
-                    onClickDispensar = {
-                        viewModel.fecharCaixaImagem()
-                    },
-                    onClickSalvar = {
-                        viewModel.carregaImagem(it)
-                    }
+                    onClickDispensar = onFecharCaixaImagem,
+                    onClickSalvar = { onCarregarImagem(it) }
                 )
             }
 
@@ -190,7 +213,7 @@ fun CadastroContatoTela(
                 caixaDialogoData(
                     LocalContext.current,
                     dataAtual = state.contato.aniversario,
-                    onClickDispensar = { viewModel.fecharCaixaData() },
+                    onClickDispensar = onFecharCaixaData,
                     onClickDataSelecionada = state.onAniversarioMudou
                 )
             }
@@ -199,7 +222,7 @@ fun CadastroContatoTela(
 }
 
 @Composable
-fun CadastroContatoAppBar(tituloApprBar: String) {
+fun FormularioContatoAppBar(tituloApprBar: String) {
     TopAppBar(
         title = { Text(text = tituloApprBar) },
     )
@@ -207,10 +230,9 @@ fun CadastroContatoAppBar(tituloApprBar: String) {
 
 @Preview
 @Composable
-fun TelaCadastroPreview() {
-    CadastroContatoTela(
-        Modifier,
-        viewModel(),
-        {}
+fun FormularioContatoTelaPreview() {
+    FormularioContatoTela(
+        state = FormularioContatoUiState(),
+        textoAniversario = "01/01/2000"
     )
 }

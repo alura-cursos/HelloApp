@@ -13,7 +13,8 @@ class ListaContatosViewModel(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ListaContatosUiState())
-    val uiState: StateFlow<ListaContatosUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<ListaContatosUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {

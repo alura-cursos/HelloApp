@@ -30,12 +30,28 @@ import br.com.alura.helloapp.ui.components.AsyncImagePerfil
 fun ListaContatosTela(
     modifier: Modifier = Modifier,
     viewModel: ListaContatosViewModel = viewModel(),
-    onClickDeslogar: () -> Unit,
-    onClickAbreDetalhes: (Contato) -> Unit,
-    onClickAbreCadastro: () -> Unit,
+    onClickDeslogar: () -> Unit = {},
+    onClickAbreDetalhes: (Long) -> Unit = {},
+    onClickAbreCadastro: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    ListaContatosTela(
+        modifier = modifier,
+        state = state,
+        onClickDeslogar = onClickDeslogar,
+        onClickAbreDetalhes = onClickAbreDetalhes,
+        onClickAbreCadastro = onClickAbreCadastro
+    )
+}
 
+@Composable
+fun ListaContatosTela(
+    modifier: Modifier = Modifier,
+    state: ListaContatosUiState,
+    onClickDeslogar: () -> Unit = {},
+    onClickAbreDetalhes: (Long) -> Unit = {},
+    onClickAbreCadastro: () -> Unit = {}
+) {
     Scaffold(
         topBar = { AppBarListaContatos(onClickDeslogar = onClickDeslogar) },
         floatingActionButton = {
@@ -51,8 +67,8 @@ fun ListaContatosTela(
 
         LazyColumn(modifier.padding(paddingValues)) {
             items(state.contatos) { contato ->
-                ContatoItem(contato) {
-                    onClickAbreDetalhes(contato)
+                ContatoItem(contato) { idContato ->
+                    onClickAbreDetalhes(idContato)
                 }
             }
         }
@@ -80,21 +96,20 @@ fun AppBarListaContatos(onClickDeslogar: () -> Unit) {
 @Composable
 fun ContatoItem(
     contato: Contato,
-    onClick: (Contato) -> Unit
+    onClick: (Long) -> Unit
 ) {
     Card(
-        Modifier.clickable { onClick(contato) },
+        Modifier.clickable { onClick(contato.id) },
         backgroundColor = Color.White
     ) {
         Row(
             Modifier.padding(16.dp),
         ) {
-
             AsyncImagePerfil(
+                urlImagem = contato.fotoPerfil,
                 modifier = Modifier
                     .size(48.dp)
-                    .clip(CircleShape),
-                urlImagem = contato.fotoPerfil
+                    .clip(CircleShape)
             )
 
             Column(
@@ -119,7 +134,9 @@ fun ContatoItem(
 @Preview
 @Composable
 fun ListaContatosPreview() {
-    ListaContatosTela(Modifier, viewModel(), {}, {}, {})
+    ListaContatosTela(
+        state = ListaContatosUiState(contatosExemplo)
+    )
 }
 
 @Preview

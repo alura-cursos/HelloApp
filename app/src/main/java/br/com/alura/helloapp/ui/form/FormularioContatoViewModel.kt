@@ -5,18 +5,18 @@ import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaDate
 import br.com.alura.helloapp.converteParaString
-import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class CadastroContatoViewModel(
+class FormularioContatoViewModel(
     private val contatoDao: ContatoDao,
     private val idContato: Long,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CadastroContatoUiState())
-    val uiState: StateFlow<CadastroContatoUiState> get() = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(FormularioContatoUiState())
+    val uiState: StateFlow<FormularioContatoUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -28,8 +28,8 @@ class CadastroContatoViewModel(
             state.copy(
 
                 tituloAppbar = if (idContato == 0L) {
-                    R.string.title_activity_cadastro_contato
-                } else R.string.title_activity_editar_contato,
+                    R.string.titulo_activity_cadastro_contato
+                } else R.string.titulo_activity_editar_contato,
 
                 onNomeMudou = {
                     _uiState.value = _uiState.value.copy(
@@ -73,26 +73,20 @@ class CadastroContatoViewModel(
         }
     }
 
-    fun salvarContato(contato: Contato) {
+    fun salvarContato() {
         viewModelScope.launch {
-            contatoDao.insere(contato)
+            contatoDao.insere(_uiState.value.contato)
         }
     }
 
-    fun defineTextoAniversario(stringResource: String): String {
+    fun defineTextoAniversario(textoAniversario: String): String {
         _uiState.value.contato.aniversario?.let {
             return it.converteParaString()
         }
-        return stringResource
+        return textoAniversario
     }
 
-
-    fun defineTituloAppBar() {
-        return
-    }
-
-
-    fun carregaImagem(url: String) {
+    fun carregarImagem(url: String) {
         _uiState.value = _uiState.value.copy(
             _uiState.value.contato.copy(fotoPerfil = url)
         )
@@ -100,15 +94,15 @@ class CadastroContatoViewModel(
     }
 
 
-    fun fecharCaixaImagem() {
+    fun mostrarCaixaImagem() {
         _uiState.update {
-            it.copy(mostrarCaixaDialogoImagem = false)
+            it.copy(mostrarCaixaDialogoImagem = true)
         }
     }
 
-    fun abriCaixaImagem() {
+    fun fecharCaixaImagem() {
         _uiState.update {
-            it.copy(mostrarCaixaDialogoImagem = true)
+            it.copy(mostrarCaixaDialogoImagem = false)
         }
     }
 
@@ -123,5 +117,4 @@ class CadastroContatoViewModel(
             it.copy(mostrarCaixaDialogoData = false)
         }
     }
-
 }

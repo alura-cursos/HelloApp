@@ -3,7 +3,7 @@ package br.com.alura.helloapp.ui.form
 import androidx.annotation.StringRes
 import br.com.alura.helloapp.data.Contato
 
-data class CadastroContatoUiState(
+data class FormularioContatoUiState(
     val contato: Contato = Contato(),
     val mostrarCaixaDialogoImagem: Boolean = false,
     val mostrarCaixaDialogoData: Boolean = false,

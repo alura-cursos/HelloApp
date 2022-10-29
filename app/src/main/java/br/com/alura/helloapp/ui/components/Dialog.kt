@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.alura.helloapp.R
@@ -24,8 +25,8 @@ import java.util.*
 fun caixaDialogoData(
     context: Context,
     dataAtual: Date?,
-    onClickDispensar: () -> Unit,
-    onClickDataSelecionada: (dataSelecionada: String) -> Unit,
+    onClickDispensar: () -> Unit = {},
+    onClickDataSelecionada: (dataSelecionada: String) -> Unit = {},
 ) {
     val calendario = Calendar.getInstance()
 
@@ -53,9 +54,9 @@ fun caixaDialogoData(
 @Composable
 fun CaixaDialogoImagem(
     fotoPerfil: String,
-    onFotoPerfilMudou: (String) -> Unit,
-    onClickDispensar: () -> Unit,
-    onClickSalvar: (urlImagem: String) -> Unit,
+    onFotoPerfilMudou: (String) -> Unit = {},
+    onClickDispensar: () -> Unit = {},
+    onClickSalvar: (urlImagem: String) -> Unit = {},
 ) {
 
     Dialog(
@@ -71,11 +72,11 @@ fun CaixaDialogoImagem(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AsyncImagePerfil(
+                    urlImagem = fotoPerfil,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .clip(RoundedCornerShape(5, 5)),
-                    urlImagem = fotoPerfil
+                        .clip(RoundedCornerShape(5, 5))
                 )
 
                 OutlinedTextField(modifier = Modifier
@@ -104,9 +105,9 @@ fun CaixaDialogoImagem(
     )
 }
 
-//
-//@Preview
-//@Composable
-//fun CaixaDialogoImagemPreview() {
-//    CaixaDialogoImagem("", {}, {})
-//}
+
+@Preview
+@Composable
+fun CaixaDialogoImagemPreview() {
+    CaixaDialogoImagem("")
+}

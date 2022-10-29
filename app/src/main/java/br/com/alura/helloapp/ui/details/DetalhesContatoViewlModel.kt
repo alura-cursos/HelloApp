@@ -14,7 +14,8 @@ class DetalhesContatoViewlModel(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetalhesContatoUiState())
-    val uiState: StateFlow<DetalhesContatoUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<DetalhesContatoUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -24,15 +25,15 @@ class DetalhesContatoViewlModel(
 
     private suspend fun carregaContato() {
         contatoDao.buscaPorId(idContato).collect {
-            it?.let {
+            it?.let { contatoEncontrado ->
                 _uiState.value = _uiState.value.copy(
-                    contato = it.copy()
+                    contato = contatoEncontrado
                 )
             }
         }
     }
 
-    fun removeCotato() {
+    fun removeContato() {
         viewModelScope.launch {
             contatoDao.remove(idContato)
         }

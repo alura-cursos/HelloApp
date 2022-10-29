@@ -1,65 +1,65 @@
 package br.com.alura.helloapp.ui
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import br.com.alura.helloapp.CadastroContato
+import br.com.alura.helloapp.FormularioContato
 import br.com.alura.helloapp.DetalhesContato
 import br.com.alura.helloapp.ListaContatos
-import br.com.alura.helloapp.R
+import br.com.alura.helloapp.DestinoInicial
 import br.com.alura.helloapp.database.ContatoDao
-import br.com.alura.helloapp.extensions.mostraMensagem
-import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
-import br.com.alura.helloapp.ui.form.CadastroContatoTela
-import br.com.alura.helloapp.ui.form.CadastroContatoViewModel
 import br.com.alura.helloapp.ui.details.DetalhesContatoTela
+import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
+import br.com.alura.helloapp.ui.form.FormularioContatoTela
+import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 import br.com.alura.helloapp.ui.home.ListaContatosTela
 import br.com.alura.helloapp.ui.home.ListaContatosViewModel
 
 @Composable
 fun HelloAppNavHost(
-    modifier: Modifier = Modifier,
     navController: NavHostController,
     contatoDao: ContatoDao,
-    context: Context
+    modifier: Modifier = Modifier,
+    onContatoApagado: () -> Unit = {}
+
 ) {
     NavHost(
         navController = navController,
-        startDestination = ListaContatos.rota,
+        startDestination = DestinoInicial.rota,
         modifier = modifier
     ) {
         composable(route = ListaContatos.rota) {
             ListaContatosTela(
                 viewModel = ListaContatosViewModel(contatoDao),
                 onClickDeslogar = {},
-                onClickAbreDetalhes = {
+                onClickAbreDetalhes = { idContato ->
                     navController
-                        .navegaParaDetalhes(it.id)
+                        .navegaParaDetalhes(idContato)
                 },
                 onClickAbreCadastro = {
-                    navController.navegaParaCadastro()
+                    navController.navegaParaFormularioContato()
                 })
         }
 
         composable(
-            route = CadastroContato.rotaComArgumentos,
-            arguments = CadastroContato.argumentos
+            route = FormularioContato.rotaComArgumentos,
+            arguments = FormularioContato.argumentos
         ) { navBackStackEntry ->
 
-            val idContato: Long =
-                navBackStackEntry.arguments?.getLong(DetalhesContato.idContato, 0L)!!
-
-            CadastroContatoTela(
-                viewModel = CadastroContatoViewModel(
-                    contatoDao, idContato
-                ),
-                onClickSalvar = {
-                    navController.navigateUp()
-                })
+            navBackStackEntry.arguments?.getLong(
+                DetalhesContato.idContato, 0L
+            )?.let { idContato ->
+                FormularioContatoTela(
+                    viewModel = FormularioContatoViewModel(
+                        contatoDao, idContato
+                    ),
+                    onClickSalvar = {
+                        navController.navigateUp()
+                    })
+            }
         }
 
         composable(
@@ -72,10 +72,10 @@ fun HelloAppNavHost(
                 viewModel = DetalhesContatoViewlModel(contatoDao, idContato),
                 onClickVoltar = { navController.navigateUp() },
                 onClickApagar = {
-                    context.mostraMensagem(context.getString(R.string.contato_apagado))
+                    onContatoApagado()
                     navController.navigateUp()
                 },
-                onClickEditar = { navController.navegaParaCadastro(idContato) })
+                onClickEditar = { navController.navegaParaFormularioContato(idContato) })
         }
     }
 }
@@ -94,6 +94,6 @@ fun NavHostController.navegaParaDetalhes(idContato: Long) {
     this.navegaDiretoAoTopo("${DetalhesContato.rota}/$idContato")
 }
 
-fun NavHostController.navegaParaCadastro(idContato: Long = 0L) {
-    this.navigate("${CadastroContato.rota}/$idContato")
+fun NavHostController.navegaParaFormularioContato(idContato: Long = 0L) {
+    this.navigate("${FormularioContato.rota}/$idContato")
 }

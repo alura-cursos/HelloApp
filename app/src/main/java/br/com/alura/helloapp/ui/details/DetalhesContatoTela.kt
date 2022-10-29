@@ -10,9 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,27 +18,42 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 
 @Composable
 fun DetalhesContatoTela(
     modifier: Modifier = Modifier,
     viewModel: DetalhesContatoViewlModel = viewModel(),
-    onClickVoltar: () -> Unit,
-    onClickApagar: () -> Unit,
-    onClickEditar: () -> Unit
+    onClickApagar: () -> Unit = {},
+    onClickEditar: () -> Unit = {},
+    onClickVoltar: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
+    DetalhesContatoTela(
+        modifier = modifier,
+        state = state,
+        onApagaContato = {
+            viewModel.removeContato()
+            onClickApagar()
+        },
+        onClickEditar = onClickEditar,
+        onClickVoltar = onClickVoltar
+    )
+}
+
+@Composable
+fun DetalhesContatoTela(
+    modifier: Modifier = Modifier,
+    state: DetalhesContatoUiState,
+    onClickVoltar: () -> Unit = {},
+    onClickEditar: () -> Unit = {},
+    onApagaContato: () -> Unit = {},
+) {
     Scaffold(
         topBar = {
             DetalhesContatoAppBar(
                 onClickVoltar = onClickVoltar,
-                onClickApagar = {
-                    viewModel.removeCotato()
-                    onClickApagar()
-                },
+                onClickApagar = onApagaContato,
                 onClickEditar = onClickEditar
             )
         },
@@ -54,10 +66,10 @@ fun DetalhesContatoTela(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AsyncImagePerfil(
+                urlImagem = state.contato.fotoPerfil,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp),
-                urlImagem = state.contato.fotoPerfil
+                    .height(250.dp)
             )
             Text(
                 modifier = Modifier.padding(vertical = 16.dp),
@@ -118,7 +130,7 @@ fun DetalhesContatoTela(
 
                 Text(
                     modifier = Modifier.padding(bottom = 22.dp),
-                    text = stringResource(R.string.informações),
+                    text = stringResource(R.string.informacoes),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.subtitle1
                 )
@@ -172,7 +184,7 @@ fun DetalhesContatoAppBar(
     onClickEditar: () -> Unit
 ) {
     TopAppBar(
-        title = { },
+        title = {},
         navigationIcon = {
             IconButton(
                 onClick = onClickVoltar
@@ -210,9 +222,5 @@ fun DetalhesContatoAppBar(
 @Preview
 @Composable
 fun DetalhesContatoScreenPreview() {
-    DetalhesContatoTela(
-        Modifier,
-        viewModel(),
-        {}, {}, {}
-    )
+    DetalhesContatoTela(state = DetalhesContatoUiState())
 }

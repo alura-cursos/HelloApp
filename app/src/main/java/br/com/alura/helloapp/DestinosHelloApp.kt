@@ -3,18 +3,18 @@ package br.com.alura.helloapp
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
-interface DestinosHelloApp {
-    val rota: String
+object DestinoInicial {
+    const val rota = "lista_contatos"
 }
 
-object ListaContatos : DestinosHelloApp {
-    override val rota = "lista_contatos"
+object ListaContatos {
+    const val rota = "lista_contatos"
 }
 
-object CadastroContato : DestinosHelloApp {
-    override val rota = "cadastro_contato"
+object FormularioContato {
+    const val rota = "cadastro_contato"
     const val idContato = "id_contato"
-    val rotaComArgumentos = "$rota/{$idContato}"
+    const val rotaComArgumentos = "$rota/{$idContato}"
     val argumentos = listOf(
         navArgument(idContato) {
             defaultValue = 0L
@@ -23,10 +23,10 @@ object CadastroContato : DestinosHelloApp {
     )
 }
 
-object DetalhesContato : DestinosHelloApp {
-    override val rota = "detalhes_contato"
+object DetalhesContato {
+    const val rota = "detalhes_contato"
     const val idContato = "id_contato"
-    val rotaComArgumentos = "$rota/{$idContato}"
+    const val rotaComArgumentos = "$rota/{$idContato}"
     val argumentos = listOf(
         navArgument(idContato) {
             defaultValue = 0L

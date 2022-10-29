@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">HelloApp </string>
-    <string name="title_activity_cadastro_contato">Adicionar contato</string>
-    <string name="title_activity_editar_contato">Editar contato</string>
-    <string name="title_activity_detalhes_contato">DetalhesContatoActivity</string>
+    <string name="titulo_activity_cadastro_contato">Adicionar contato</string>
+    <string name="titulo_activity_editar_contato">Editar contato</string>
+    <string name="titulo_activity_detalhes_contato">DetalhesContatoActivity</string>
     <string name="nome">Nome</string>
     <string name="sobrenome">Sobrenome</string>
     <string name="telefone">Telefone</string>
@@ -11,7 +11,7 @@
     <string name="carregar">Carregar</string>
     <string name="mensagem">Mensagem</string>
     <string name="ligar">Ligar</string>
-    <string name="informações">Informações</string>
+    <string name="informacoes">Informações</string>
     <string name="nome_completo">Nome completo</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="senha">Senha</string>
