@@ -2,26 +2,23 @@ package br.com.alura.helloapp.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import br.com.alura.helloapp.FormularioContato
-import br.com.alura.helloapp.DetalhesContato
-import br.com.alura.helloapp.ListaContatos
-import br.com.alura.helloapp.DestinoInicial
-import br.com.alura.helloapp.database.ContatoDao
+import br.com.alura.helloapp.*
 import br.com.alura.helloapp.ui.details.DetalhesContatoTela
 import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import br.com.alura.helloapp.ui.form.FormularioContatoTela
 import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
+import br.com.alura.helloapp.ui.home.ListaContatosFactory
 import br.com.alura.helloapp.ui.home.ListaContatosTela
-import br.com.alura.helloapp.ui.home.ListaContatosViewModel
+
 
 @Composable
 fun HelloAppNavHost(
     navController: NavHostController,
-    contatoDao: ContatoDao,
     modifier: Modifier = Modifier,
     onContatoApagado: () -> Unit = {}
 
@@ -33,7 +30,7 @@ fun HelloAppNavHost(
     ) {
         composable(route = ListaContatos.rota) {
             ListaContatosTela(
-                viewModel = ListaContatosViewModel(contatoDao),
+                viewModel = viewModel(factory = ListaContatosFactory()),
                 onClickDeslogar = {},
                 onClickAbreDetalhes = { idContato ->
                     navController
@@ -52,10 +49,12 @@ fun HelloAppNavHost(
             navBackStackEntry.arguments?.getLong(
                 DetalhesContato.idContato, 0L
             )?.let { idContato ->
+
+                val viewModelTeste: FormularioContatoViewModel =
+                    viewModel(factory = helloAppFactory(idContato))
+
                 FormularioContatoTela(
-                    viewModel = FormularioContatoViewModel(
-                        contatoDao, idContato
-                    ),
+                    viewModel = viewModelTeste,
                     onClickSalvar = {
                         navController.navigateUp()
                     })
@@ -68,8 +67,14 @@ fun HelloAppNavHost(
         ) { navBackStackEntry ->
             val idContato: Long =
                 navBackStackEntry.arguments?.getLong(DetalhesContato.idContato, 0L)!!
+
+            val viewModelTeste: DetalhesContatoViewlModel =
+                viewModel(factory = helloAppFactory(idContato))
+
+            // viewModel = viewModel(factory = DetalhesContatoFactory(idContato)),
+
             DetalhesContatoTela(
-                viewModel = DetalhesContatoViewlModel(contatoDao, idContato),
+                viewModel = viewModelTeste,
                 onClickVoltar = { navController.navigateUp() },
                 onClickApagar = {
                     onContatoApagado()

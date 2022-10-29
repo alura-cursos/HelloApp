@@ -35,7 +35,7 @@ import coil.request.ImageRequest
 @Composable
 fun FormularioContatoTela(
     modifier: Modifier = Modifier,
-    viewModel: FormularioContatoViewModel = viewModel(),
+    viewModel: FormularioContatoViewModel,
     onClickSalvar: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()

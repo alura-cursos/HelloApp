@@ -1,8 +1,13 @@
 package br.com.alura.helloapp.ui.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import br.com.alura.helloapp.HelloAppAplication
 import br.com.alura.helloapp.database.ContatoDao
+import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,5 +33,19 @@ class ListaContatosViewModel(
                 contatos = it
             )
         }
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class ListaContatosFactory :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(
+        modelClass: Class<T>,
+        extras: CreationExtras
+    ): T {
+        val appAplication = checkNotNull(extras[APPLICATION_KEY])
+        return ListaContatosViewModel(
+            (appAplication as HelloAppAplication).database.contatoDao(),
+        ) as T
     }
 }

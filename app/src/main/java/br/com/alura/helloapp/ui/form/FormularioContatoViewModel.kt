@@ -1,11 +1,19 @@
 package br.com.alura.helloapp.ui.form
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import br.com.alura.helloapp.HelloAppAplication
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.converteParaDate
 import br.com.alura.helloapp.converteParaString
 import br.com.alura.helloapp.database.ContatoDao
+import br.com.alura.helloapp.database.HelloAppDatabase
+import br.com.alura.helloapp.ui.home.ListaContatosViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -26,7 +34,6 @@ class FormularioContatoViewModel(
         _uiState.update { state ->
 
             state.copy(
-
                 tituloAppbar = if (idContato == 0L) {
                     R.string.titulo_activity_cadastro_contato
                 } else R.string.titulo_activity_editar_contato,
@@ -118,3 +125,20 @@ class FormularioContatoViewModel(
         }
     }
 }
+
+
+@Suppress("UNCHECKED_CAST")
+class FormularioContatoFactory(private val idContato: Long) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(
+        modelClass: Class<T>,
+        extras: CreationExtras
+    ): T {
+        val appAplication = checkNotNull(extras[APPLICATION_KEY])
+        return FormularioContatoViewModel(
+            (appAplication as HelloAppAplication).database.contatoDao(),
+            idContato
+        ) as T
+    }
+}
+
