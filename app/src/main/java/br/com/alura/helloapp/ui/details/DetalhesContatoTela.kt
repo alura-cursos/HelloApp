@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,26 +15,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.extensions.converteParaString
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
+import kotlinx.coroutines.launch
 
 @Composable
 fun DetalhesContatoTela(
+    viewModel: DetalhesContatoViewlModel,
     modifier: Modifier = Modifier,
-    viewModel: DetalhesContatoViewlModel = viewModel(),
     onClickApagar: () -> Unit = {},
     onClickEditar: () -> Unit = {},
     onClickVoltar: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     DetalhesContatoTela(
         modifier = modifier,
         state = state,
         onApagaContato = {
-            viewModel.removeContato()
+            coroutineScope.launch {
+                viewModel.removeContato()
+            }
             onClickApagar()
         },
         onClickEditar = onClickEditar,
@@ -43,8 +47,8 @@ fun DetalhesContatoTela(
 
 @Composable
 fun DetalhesContatoTela(
-    modifier: Modifier = Modifier,
     state: DetalhesContatoUiState,
+    modifier: Modifier = Modifier,
     onClickVoltar: () -> Unit = {},
     onClickEditar: () -> Unit = {},
     onApagaContato: () -> Unit = {},
@@ -176,16 +180,17 @@ fun DetalhesContatoTela(
     }
 }
 
-
 @Composable
 fun DetalhesContatoAppBar(
     onClickVoltar: () -> Unit,
     onClickApagar: () -> Unit,
     onClickEditar: () -> Unit
 ) {
-    TopAppBar(
-        title = {},
-        navigationIcon = {
+    TopAppBar {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             IconButton(
                 onClick = onClickVoltar
             ) {
@@ -195,27 +200,28 @@ fun DetalhesContatoAppBar(
                     contentDescription = stringResource(R.string.voltar)
                 )
             }
-        },
-        actions = {
-            IconButton(
-                onClick = onClickEditar
-            ) {
-                Icon(
-                    Icons.Default.Edit,
-                    tint = Color.White,
-                    contentDescription = stringResource(R.string.editar)
-                )
-            }
 
-            IconButton(onClick = onClickApagar) {
-                Icon(
-                    Icons.Default.Delete,
-                    tint = Color.White,
-                    contentDescription = stringResource(R.string.deletar)
-                )
+            Row {
+                IconButton(
+                    onClick = onClickEditar
+                ) {
+                    Icon(
+                        Icons.Default.Edit,
+                        tint = Color.White,
+                        contentDescription = stringResource(R.string.editar)
+                    )
+                }
+
+                IconButton(onClick = { onClickApagar() }) {
+                    Icon(
+                        Icons.Default.Delete,
+                        tint = Color.White,
+                        contentDescription = stringResource(R.string.deletar)
+                    )
+                }
             }
         }
-    )
+    }
 }
 
 

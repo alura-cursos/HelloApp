@@ -26,7 +26,7 @@ abstract class HelloAppDatabase : RoomDatabase() {
                 val instancia = Room.databaseBuilder(
                     context.applicationContext,
                     HelloAppDatabase::class.java,
-                    "helloApp.dp"
+                    "helloApp.db"
                 ).build()
                 Instancia = instancia
                 instancia

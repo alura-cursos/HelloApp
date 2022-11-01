@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.sampleData.contatosExemplo
@@ -28,8 +27,8 @@ import br.com.alura.helloapp.ui.components.AsyncImagePerfil
 
 @Composable
 fun ListaContatosTela(
+    viewModel: ListaContatosViewModel,
     modifier: Modifier = Modifier,
-    viewModel: ListaContatosViewModel = viewModel(),
     onClickDesloga: () -> Unit = {},
     onClickAbreDetalhes: (Long) -> Unit = {},
     onClickAbreCadastro: () -> Unit = {}
@@ -47,8 +46,8 @@ fun ListaContatosTela(
 
 @Composable
 fun ListaContatosTela(
-    modifier: Modifier = Modifier,
     state: ListaContatosUiState,
+    modifier: Modifier = Modifier,
     onClickDesloga: () -> Unit = {},
     onClickAbreDetalhes: (Long) -> Unit = {},
     onClickAbreCadastro: () -> Unit = {}
@@ -79,7 +78,7 @@ fun ListaContatosTela(
 @Composable
 fun AppBarListaContatos(onClickDesloga: () -> Unit) {
     TopAppBar(
-        title = { Text(text = stringResource(id = R.string.app_name)) },
+        title = { Text(text = stringResource(id = R.string.nome_do_app)) },
         actions = {
             IconButton(
                 onClick = onClickDesloga

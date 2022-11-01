@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.extensions.converteParaString
+import br.com.alura.helloapp.util.FORMATO_DATA_DIA_MES_ANO
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun caixaDialogoData(
@@ -28,19 +31,18 @@ fun caixaDialogoData(
     onClickDispensar: () -> Unit = {},
     onClickDataSelecionada: (dataSelecionada: String) -> Unit = {}
 ) {
-    val calendario = Calendar.getInstance()
+    val formatadorDeData = DateTimeFormatter.ofPattern(FORMATO_DATA_DIA_MES_ANO)
+    val dataLocal = if (dataAtual == null) LocalDate.now()
+    else LocalDate.parse(dataAtual.converteParaString(), formatadorDeData)
 
-    calendario.time = dataAtual ?: Date()
-
-    val anoAtual = calendario.get(Calendar.YEAR)
-    val mesAtual = calendario.get(Calendar.MONTH)
-    val diaAtual = calendario.get(Calendar.DAY_OF_MONTH)
+    val anoAtual = dataLocal.year
+    val mesAtual = dataLocal.monthValue
+    val diaAtual = dataLocal.dayOfMonth
 
     val datePickerDialog = DatePickerDialog(
         context, { _: DatePicker, ano, mes, dia ->
-            calendario.set(ano, mes, dia)
-            val dataSelecionada = calendario.time
-            onClickDataSelecionada(dataSelecionada.converteParaString())
+            val dataSelecionada = LocalDate.parse("$dia/$mes/$ano", formatadorDeData)
+            onClickDataSelecionada(dataSelecionada.format(formatadorDeData))
         }, anoAtual, mesAtual, diaAtual
     )
 

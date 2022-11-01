@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelloApp </string>
+    <string name="nome_do_app">HelloApp </string>
     <string name="titulo_activity_cadastro_contato">Adicionar contato</string>
     <string name="titulo_activity_editar_contato">Editar contato</string>
     <string name="titulo_activity_detalhes_contato">DetalhesContatoActivity</string>

@@ -13,7 +13,7 @@ interface ContatoDao {
     fun buscaTodos(): Flow<List<Contato>>
 
     @Query("SELECT * FROM Contato WHERE id = :id")
-    fun buscaPorId(id: Long): Flow<Contato?>
+    suspend fun buscaPorId(id: Long): Contato?
 
     @Query("DELETE FROM Contato WHERE id = :id")
     suspend fun remove(id: Long)

@@ -5,11 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.rememberNavController
 import br.com.alura.helloapp.R
+import br.com.alura.helloapp.database.HelloAppDatabase
 import br.com.alura.helloapp.extensions.mostraMensagem
 import br.com.alura.helloapp.ui.HelloAppNavHost
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 
 class ListaContatosActivity : ComponentActivity() {
+    private val contatoDao by lazy {
+        HelloAppDatabase.getDatabase(this).contatoDao()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -17,6 +22,7 @@ class ListaContatosActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 HelloAppNavHost(
                     navController = navController,
+                    contatoDao = contatoDao,
                     onContatoApagado = {
                         mostraMensagem(getString(R.string.contato_apagado))
                     }

@@ -35,11 +35,14 @@ import coil.request.ImageRequest
 
 @Composable
 fun FormularioContatoTela(
-    modifier: Modifier = Modifier,
     viewModel: FormularioContatoViewModel,
+    modifier: Modifier = Modifier,
     onClickSalvar: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    viewModel.defineTextoAniversario(
+        stringResource(id = R.string.aniversario)
+    )
 
     FormularioContatoTela(
         modifier = modifier,
@@ -47,21 +50,6 @@ fun FormularioContatoTela(
         onClickSalvar = {
             onClickSalvar()
             viewModel.salvaContato()
-        },
-        onMostrarCaixaImagem = {
-            viewModel.mostraCaixaImagem()
-        },
-        onMostrarCaixaData = {
-            viewModel.mostraCaixaData()
-        },
-        onFecharCaixaData = {
-            viewModel.fechaCaixaData()
-        },
-        textoAniversario = viewModel.defineTextoAniversario(
-            stringResource(id = R.string.aniversario)
-        ),
-        onFecharCaixaImagem = {
-            viewModel.fechaCaixaImagem()
         },
         onCarregarImagem = {
             viewModel.carregaImagem(it)
@@ -71,14 +59,9 @@ fun FormularioContatoTela(
 
 @Composable
 fun FormularioContatoTela(
-    modifier: Modifier = Modifier,
     state: FormularioContatoUiState,
+    modifier: Modifier = Modifier,
     onClickSalvar: () -> Unit = {},
-    onMostrarCaixaImagem: () -> Unit = {},
-    onMostrarCaixaData: () -> Unit = {},
-    onFecharCaixaData: () -> Unit = {},
-    textoAniversario: String,
-    onFecharCaixaImagem: () -> Unit = {},
     onCarregarImagem: (String) -> Unit = {}
 ) {
     Scaffold(
@@ -107,7 +90,7 @@ fun FormularioContatoTela(
                         .size(180.dp)
                         .clip(CircleShape)
                         .clickable {
-                            onMostrarCaixaImagem()
+                            state.onMostrarCaixaDialogoImagem(true)
                         },
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(state.fotoPerfil).build(),
@@ -177,7 +160,7 @@ fun FormularioContatoTela(
                 )
 
                 OutlinedButton(
-                    onClick = onMostrarCaixaData,
+                    onClick = { state.onMostrarCaixaDialogoData(true) },
                     modifier = Modifier.fillMaxWidth()
 
                 ) {
@@ -186,8 +169,9 @@ fun FormularioContatoTela(
                         contentDescription = null,
                         Modifier.padding(8.dp)
                     )
-                    Text(text = textoAniversario)
+                    Text(text = state.textoAniversairo)
                 }
+
 
                 Spacer(Modifier.height(16.dp))
 
@@ -205,7 +189,7 @@ fun FormularioContatoTela(
                 CaixaDialogoImagem(
                     state.fotoPerfil,
                     onFotoPerfilMudou = state.onFotoPerfilMudou,
-                    onClickDispensar = onFecharCaixaImagem,
+                    onClickDispensar = { state.onMostrarCaixaDialogoImagem(false) },
                     onClickSalvar = { onCarregarImagem(it) }
                 )
             }
@@ -214,7 +198,7 @@ fun FormularioContatoTela(
                 caixaDialogoData(
                     LocalContext.current,
                     dataAtual = state.aniversario,
-                    onClickDispensar = onFecharCaixaData,
+                    onClickDispensar = { state.onMostrarCaixaDialogoData(false) },
                     onClickDataSelecionada = state.onAniversarioMudou
                 )
             }
@@ -233,7 +217,6 @@ fun FormularioContatoAppBar(tituloApprBar: String) {
 @Composable
 fun FormularioContatoTelaPreview() {
     FormularioContatoTela(
-        state = FormularioContatoUiState(),
-        textoAniversario = "01/01/2000"
+        state = FormularioContatoUiState()
     )
 }

@@ -4,7 +4,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 object DestinoInicial {
-    const val rota = "lista_contatos"
+    const val rota = ListaContatos.rota
 }
 
 object ListaContatos {

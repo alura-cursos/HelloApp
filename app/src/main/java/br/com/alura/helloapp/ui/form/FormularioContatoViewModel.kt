@@ -3,10 +3,10 @@ package br.com.alura.helloapp.ui.form
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.R
-import br.com.alura.helloapp.extensions.converteParaDate
-import br.com.alura.helloapp.extensions.converteParaString
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
+import br.com.alura.helloapp.extensions.converteParaDate
+import br.com.alura.helloapp.extensions.converteParaString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,20 +24,15 @@ class FormularioContatoViewModel(
 
     init {
         viewModelScope.launch {
-            carregaContato()
+            carregaContato(idContato)
         }
 
         _uiState.update { state ->
             state.copy(
-                tituloAppbar = if (idContato == 0L) {
-                    R.string.titulo_activity_cadastro_contato
-                } else R.string.titulo_activity_editar_contato,
-
                 onNomeMudou = {
                     _uiState.value = _uiState.value.copy(
                         nome = it
                     )
-
                 },
                 onSobrenomeMudou = {
                     _uiState.value = _uiState.value.copy(
@@ -56,27 +51,36 @@ class FormularioContatoViewModel(
                 },
                 onAniversarioMudou = {
                     _uiState.value = _uiState.value.copy(
-                        aniversario = it.converteParaDate()
+                        aniversario = it.converteParaDate(),
+                        mostrarCaixaDialogoData = false
                     )
-                    fechaCaixaData()
                 },
+                onMostrarCaixaDialogoImagem = {
+                    _uiState.value = _uiState.value.copy(
+                        mostrarCaixaDialogoImagem = it
+                    )
+                },
+                onMostrarCaixaDialogoData = {
+                    _uiState.value = _uiState.value.copy(
+                        mostrarCaixaDialogoData = it
+                    )
+                }
             )
         }
     }
 
-    private suspend fun carregaContato() {
-        contatoDao.buscaPorId(idContato).collect {
-            it?.let { contatoEncontrado ->
-                with(contatoEncontrado) {
-                    _uiState.value = _uiState.value.copy(
-                        id = id,
-                        nome = nome,
-                        sobrenome = sobrenome,
-                        telefone = telefone,
-                        fotoPerfil = fotoPerfil,
-                        aniversario = aniversario
-                    )
-                }
+    suspend fun carregaContato(idContato: Long) {
+        contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
+            with(contatoEncontrado) {
+                _uiState.value = _uiState.value.copy(
+                    idContato = id,
+                    nome = nome,
+                    sobrenome = sobrenome,
+                    telefone = telefone,
+                    fotoPerfil = fotoPerfil,
+                    aniversario = aniversario,
+                    tituloAppbar = R.string.titulo_activity_editar_contato
+                )
             }
         }
     }
@@ -86,7 +90,7 @@ class FormularioContatoViewModel(
             with(_uiState.value) {
                 contatoDao.insere(
                     Contato(
-                        id = id,
+                        id = idContato,
                         nome = nome,
                         sobrenome = sobrenome,
                         telefone = telefone,
@@ -98,42 +102,18 @@ class FormularioContatoViewModel(
         }
     }
 
-    fun defineTextoAniversario(textoAniversario: String): String {
-        _uiState.value.aniversario?.let {
-            return it.converteParaString()
+    fun defineTextoAniversario(textoAniversario: String) {
+        val textoAniversairo = _uiState.value.aniversario?.converteParaString() ?: textoAniversario
+
+        _uiState.update {
+            it.copy(textoAniversairo = textoAniversairo)
         }
-        return textoAniversario
     }
 
     fun carregaImagem(url: String) {
         _uiState.value = _uiState.value.copy(
-            fotoPerfil = url
+            fotoPerfil = url,
+            mostrarCaixaDialogoImagem = false
         )
-        fechaCaixaImagem()
-    }
-
-
-    fun mostraCaixaImagem() {
-        _uiState.update {
-            it.copy(mostrarCaixaDialogoImagem = true)
-        }
-    }
-
-    fun fechaCaixaImagem() {
-        _uiState.update {
-            it.copy(mostrarCaixaDialogoImagem = false)
-        }
-    }
-
-    fun mostraCaixaData() {
-        _uiState.update {
-            it.copy(mostrarCaixaDialogoData = true)
-        }
-    }
-
-    fun fechaCaixaData() {
-        _uiState.update {
-            it.copy(mostrarCaixaDialogoData = false)
-        }
     }
 }
