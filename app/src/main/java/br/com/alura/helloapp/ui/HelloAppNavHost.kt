@@ -13,6 +13,7 @@ import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.ui.details.DetalhesContatoTela
 import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import br.com.alura.helloapp.ui.form.FormularioContatoTela
+import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 import br.com.alura.helloapp.ui.home.ListaContatosFactory
 import br.com.alura.helloapp.ui.home.ListaContatosTela
 
@@ -48,14 +49,6 @@ fun HelloAppNavHost(
                 DetalhesContato.idContato
             )?.let { idContato ->
 
-//                Abordagem falha:
-//                val viewModelFormulario: FormularioContatoViewModel =
-//                    viewModel(factory = helloAppViewModelFactory(contatoDao))
-//
-//                LaunchedEffect(null) {
-//                    viewModelFormulario.carregaContato(idContato)
-//                }
-
                 FormularioContatoTela(
                     viewModel = viewModel(
                         factory = helloAppViewModelFactory(
@@ -78,15 +71,13 @@ fun HelloAppNavHost(
                 DetalhesContato.idContato
             )?.let { idContato ->
 
-                val viewModelDetalhes: DetalhesContatoViewlModel =
-                    viewModel(factory = helloAppViewModelFactory(contatoDao))
-
-                LaunchedEffect(null) {
-                    viewModelDetalhes.carregaContato(idContato)
-                }
-
                 DetalhesContatoTela(
-                    viewModel = viewModelDetalhes,
+                    viewModel = viewModel(
+                        factory = helloAppViewModelFactory(
+                            contatoDao,
+                            idContato
+                        )
+                    ),
                     onClickVoltar = { navController.navigateUp() },
                     onClickApagar = {
                         onContatoApagado()

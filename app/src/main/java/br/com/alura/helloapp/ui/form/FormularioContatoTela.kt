@@ -37,9 +37,10 @@ import coil.request.ImageRequest
 fun FormularioContatoTela(
     viewModel: FormularioContatoViewModel,
     modifier: Modifier = Modifier,
-    onClickSalvar: () -> Unit = {}
+    onClickSalvar: () -> Unit = {},
 ) {
     val state by viewModel.uiState.collectAsState()
+
     viewModel.defineTextoAniversario(
         stringResource(id = R.string.aniversario)
     )

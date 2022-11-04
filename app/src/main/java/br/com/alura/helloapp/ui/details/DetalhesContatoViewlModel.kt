@@ -1,20 +1,29 @@
 package br.com.alura.helloapp.ui.details
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.database.ContatoDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class DetalhesContatoViewlModel(
     private val contatoDao: ContatoDao,
+    private val idContato: Long
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetalhesContatoUiState())
     val uiState: StateFlow<DetalhesContatoUiState>
         get() = _uiState.asStateFlow()
 
-    suspend fun carregaContato(idContato: Long) {
+    init {
+        viewModelScope.launch {
+            carregaContato()
+        }
+    }
+
+    suspend fun carregaContato() {
         contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
             with(contatoEncontrado) {
                 _uiState.value = _uiState.value.copy(

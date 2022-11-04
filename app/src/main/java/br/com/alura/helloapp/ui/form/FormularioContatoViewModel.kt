@@ -24,52 +24,43 @@ class FormularioContatoViewModel(
 
     init {
         viewModelScope.launch {
-            carregaContato(idContato)
+            carregaContato()
         }
 
         _uiState.update { state ->
-            state.copy(
-                onNomeMudou = {
-                    _uiState.value = _uiState.value.copy(
-                        nome = it
-                    )
-                },
-                onSobrenomeMudou = {
-                    _uiState.value = _uiState.value.copy(
-                        sobrenome = it
-                    )
-                },
-                onTelefoneMudou = {
-                    _uiState.value = _uiState.value.copy(
-                        telefone = it
-                    )
-                },
-                onFotoPerfilMudou = {
-                    _uiState.value = _uiState.value.copy(
-                        fotoPerfil = it
-                    )
-                },
-                onAniversarioMudou = {
-                    _uiState.value = _uiState.value.copy(
-                        aniversario = it.converteParaDate(),
-                        mostrarCaixaDialogoData = false
-                    )
-                },
-                onMostrarCaixaDialogoImagem = {
-                    _uiState.value = _uiState.value.copy(
-                        mostrarCaixaDialogoImagem = it
-                    )
-                },
-                onMostrarCaixaDialogoData = {
-                    _uiState.value = _uiState.value.copy(
-                        mostrarCaixaDialogoData = it
-                    )
-                }
-            )
+            state.copy(onNomeMudou = {
+                _uiState.value = _uiState.value.copy(
+                    nome = it
+                )
+            }, onSobrenomeMudou = {
+                _uiState.value = _uiState.value.copy(
+                    sobrenome = it
+                )
+            }, onTelefoneMudou = {
+                _uiState.value = _uiState.value.copy(
+                    telefone = it
+                )
+            }, onFotoPerfilMudou = {
+                _uiState.value = _uiState.value.copy(
+                    fotoPerfil = it
+                )
+            }, onAniversarioMudou = {
+                _uiState.value = _uiState.value.copy(
+                    aniversario = it.converteParaDate(), mostrarCaixaDialogoData = false
+                )
+            }, onMostrarCaixaDialogoImagem = {
+                _uiState.value = _uiState.value.copy(
+                    mostrarCaixaDialogoImagem = it
+                )
+            }, onMostrarCaixaDialogoData = {
+                _uiState.value = _uiState.value.copy(
+                    mostrarCaixaDialogoData = it
+                )
+            })
         }
     }
 
-    suspend fun carregaContato(idContato: Long) {
+    suspend fun carregaContato() {
         contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
             with(contatoEncontrado) {
                 _uiState.value = _uiState.value.copy(
@@ -112,8 +103,7 @@ class FormularioContatoViewModel(
 
     fun carregaImagem(url: String) {
         _uiState.value = _uiState.value.copy(
-            fotoPerfil = url,
-            mostrarCaixaDialogoImagem = false
+            fotoPerfil = url, mostrarCaixaDialogoImagem = false
         )
     }
 }

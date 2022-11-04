@@ -20,6 +20,6 @@ data class FormularioContatoUiState(
     val onAniversarioMudou: (String) -> Unit = {},
     val onMostrarCaixaDialogoImagem: (mostrar: Boolean) -> Unit = {},
     val onMostrarCaixaDialogoData: (mostrar: Boolean) -> Unit = {},
-    var textoAniversairo: String = "",
-    @StringRes val tituloAppbar: Int? = R.string.titulo_activity_cadastro_contato
+    val textoAniversairo: String = "",
+    @StringRes val tituloAppbar: Int? = R.string.titulo_activity_cadastro_contato,
 )

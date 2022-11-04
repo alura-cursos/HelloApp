@@ -26,7 +26,8 @@ fun helloAppViewModelFactory(
                         )
                     isAssignableFrom(DetalhesContatoViewlModel::class.java) ->
                         DetalhesContatoViewlModel(
-                            contatoDao
+                            contatoDao,
+                            idContato
                         )
                     else -> throw IllegalArgumentException("ViewModel desconhecido: ${modelClass.name}")
                 }
