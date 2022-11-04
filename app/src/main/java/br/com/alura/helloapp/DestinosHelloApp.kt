@@ -12,7 +12,7 @@ object ListaContatos {
 }
 
 object FormularioContato {
-    const val rota = "cadastro_contato"
+    const val rota = "formulario_contato"
     const val idContato = "id_contato"
     const val rotaComArgumentos = "$rota/{$idContato}"
     val argumentos = listOf(
@@ -33,4 +33,12 @@ object DetalhesContato {
             type = NavType.LongType
         }
     )
+}
+
+object FormularioLogin {
+    const val rota = "formulario_login"
+}
+
+object Login {
+    const val rota = "login"
 }

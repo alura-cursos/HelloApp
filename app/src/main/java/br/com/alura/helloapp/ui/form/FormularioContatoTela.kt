@@ -46,8 +46,8 @@ fun FormularioContatoTela(
     )
 
     FormularioContatoTela(
-        modifier = modifier,
         state = state,
+        modifier = modifier,
         onClickSalvar = {
             onClickSalvar()
             viewModel.salvaContato()

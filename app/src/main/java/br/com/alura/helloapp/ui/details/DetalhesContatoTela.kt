@@ -11,12 +11,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.extensions.converteParaString
+import br.com.alura.helloapp.extensions.mostraMensagem
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
 import kotlinx.coroutines.launch
 
@@ -30,6 +32,7 @@ fun DetalhesContatoTela(
 ) {
     val state by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     DetalhesContatoTela(
         modifier = modifier,
@@ -37,6 +40,7 @@ fun DetalhesContatoTela(
         onApagaContato = {
             coroutineScope.launch {
                 viewModel.removeContato()
+                context.mostraMensagem(context.getString(R.string.contato_apagado))
             }
             onClickApagar()
         },

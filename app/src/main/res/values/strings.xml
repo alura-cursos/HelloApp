@@ -30,4 +30,6 @@
     <string name="deletar">Deletar</string>
     <string name="adicionar_novo_contato">Adicionar novo contato</string>
     <string name="deslogar">Deslogar</string>
+    <string name="usuario_ou_senha_incorreto">Usuário ou senha incorreto</string>
+    <string name="logo_do_app">Logo do aplicativo</string>
 </resources>

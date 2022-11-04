@@ -12,18 +12,27 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.edit
+import br.com.alura.helloapp.ListaContatos
+import br.com.alura.helloapp.Login
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.sampleData.contatosExemplo
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
+import br.com.alura.helloapp.ui.navegaDireto
+import br.com.alura.helloapp.util.preferences.PreferencesKeys
+import br.com.alura.helloapp.util.preferences.dataStore
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListaContatosTela(
@@ -34,11 +43,21 @@ fun ListaContatosTela(
     onClickAbreCadastro: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    val dataStore = LocalContext.current.dataStore
+    val scope = rememberCoroutineScope()
 
     ListaContatosTela(
         modifier = modifier,
         state = state,
-        onClickDesloga = onClickDesloga,
+        onClickDesloga = {
+            scope.launch {
+                dataStore.edit { preferences ->
+                    preferences[PreferencesKeys.LOGADO] = false
+                }
+                onClickDesloga
+            }
+
+             },
         onClickAbreDetalhes = onClickAbreDetalhes,
         onClickAbreCadastro = onClickAbreCadastro
     )
