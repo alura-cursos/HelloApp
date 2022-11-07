@@ -57,7 +57,7 @@ fun ListaContatosTela(
                 onClickDesloga
             }
 
-             },
+        },
         onClickAbreDetalhes = onClickAbreDetalhes,
         onClickAbreCadastro = onClickAbreCadastro
     )
@@ -75,6 +75,7 @@ fun ListaContatosTela(
         topBar = { AppBarListaContatos(onClickDesloga = onClickDesloga) },
         floatingActionButton = {
             FloatingActionButton(
+                backgroundColor = MaterialTheme.colors.primary,
                 onClick = { onClickAbreCadastro() },
             ) {
                 Icon(
@@ -119,7 +120,7 @@ fun ContatoItem(
 ) {
     Card(
         Modifier.clickable { onClick(contato.id) },
-        backgroundColor = Color.White
+        backgroundColor = MaterialTheme.colors.background
     ) {
         Row(
             Modifier.padding(16.dp),
