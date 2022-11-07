@@ -6,125 +6,108 @@ import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.alura.helloapp.R
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import br.com.alura.helloapp.extensions.converteParaString
+import br.com.alura.helloapp.util.FORMATO_DATA_DIA_MES_ANO
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
-fun dataPickerDialog(
+fun caixaDialogoData(
     context: Context,
-    onDismiss: () -> Unit,
-    onClickDataSelecionada: (dataSelecionada: Date) -> Unit,
+    dataAtual: Date?,
+    onClickDispensar: () -> Unit = {},
+    onClickDataSelecionada: (dataSelecionada: String) -> Unit = {}
 ) {
+    val formatadorDeData = DateTimeFormatter.ofPattern(FORMATO_DATA_DIA_MES_ANO)
+    val dataLocal = if (dataAtual == null) LocalDate.now()
+    else LocalDate.parse(dataAtual.converteParaString(), formatadorDeData)
 
-    val calendario = Calendar.getInstance()
-    val ano = calendario.get(Calendar.YEAR)
-    val mes = calendario.get(Calendar.MONTH)
-    val dia = calendario.get(Calendar.DAY_OF_MONTH)
-    calendario.time = Date()
+    val anoAtual = dataLocal.year
+    val mesAtual = dataLocal.monthValue
+    val diaAtual = dataLocal.dayOfMonth
 
     val datePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, _: Int, _: Int, _: Int ->
-            calendario.set(ano, mes, dia)
-            val dataSelecionada = calendario.time
-            onClickDataSelecionada(dataSelecionada)
-        },
-        ano, mes, dia
+        context, { _: DatePicker, ano, mes, dia ->
+            val dataSelecionada = LocalDate.parse("$dia/$mes/$ano", formatadorDeData)
+            onClickDataSelecionada(dataSelecionada.format(formatadorDeData))
+        }, anoAtual, mesAtual, diaAtual
     )
 
     datePickerDialog.setOnDismissListener {
-        onDismiss()
+        onClickDispensar()
     }
     datePickerDialog.show()
-
 }
 
-
 @Composable
-fun CarregaFotoDialog(
-    onDismiss: () -> Unit,
-    onConfirmButton: (urlImagem: String) -> Unit
+fun CaixaDialogoImagem(
+    fotoPerfil: String,
+    modifier: Modifier = Modifier,
+    onFotoPerfilMudou: (String) -> Unit = {},
+    onClickDispensar: () -> Unit = {},
+    onClickSalvar: (urlImagem: String) -> Unit = {}
 ) {
-    var urlImagem by remember { mutableStateOf("") }
-
     Dialog(
-        onDismissRequest = { onDismiss() },
+        onDismissRequest = onClickDispensar,
         content = {
             Column(
-                Modifier
+                modifier
                     .clip(RoundedCornerShape(5))
-                    .heightIn(250.dp)
+                    .heightIn(250.dp, 400.dp)
                     .widthIn(200.dp)
                     .background(Color.White)
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                AsyncImage(
+                AsyncImagePerfil(
+                    urlImagem = fotoPerfil,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .clip(RoundedCornerShape(5, 5)),
-                    contentScale = ContentScale.Crop,
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(urlImagem).build(),
-                    placeholder = painterResource(R.drawable.default_profile_picture),
-                    error = painterResource(R.drawable.default_profile_picture),
-                    contentDescription = stringResource(R.string.foto_perfil_contato),
+                        .clip(RoundedCornerShape(5, 5))
                 )
-
 
                 OutlinedTextField(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                    value = urlImagem,
-                    maxLines = 1,
-                    onValueChange = { urlImagem = it },
+                    .padding(top = 16.dp)
+                    .heightIn(max = 80.dp),
+                    value = fotoPerfil,
+                    onValueChange = onFotoPerfilMudou,
                     label = { Text(stringResource(id = R.string.link_imagem)) })
-
-//                Button(
-//                    onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Text(text = stringResource(R.string.carregar))
-//                }
 
                 Spacer(Modifier.height(16.dp))
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onClickDispensar) {
                         Text(text = stringResource(R.string.cancelar))
                     }
-
-                    TextButton(onClick = { onConfirmButton(urlImagem) }) {
+                    TextButton(onClick = { onClickSalvar(fotoPerfil) }) {
                         Text(text = stringResource(R.string.salvar))
                     }
                 }
             }
         }
     )
-
 }
-
 
 @Preview
 @Composable
-fun CarregaFotoDialogPreview() {
-    CarregaFotoDialog(onDismiss = { /*TODO*/ }, onConfirmButton = {})
+fun CaixaDialogoImagemPreview() {
+    CaixaDialogoImagem("")
 }

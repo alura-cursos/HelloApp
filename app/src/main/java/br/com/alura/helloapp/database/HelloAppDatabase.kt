@@ -8,19 +8,29 @@ import androidx.room.TypeConverters
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.converter.Converters
 
-@Database(entities = [Contato::class], version = 1)
+@Database(
+    entities = [Contato::class],
+    version = 1,
+    exportSchema = true
+)
 @TypeConverters(Converters::class)
 abstract class HelloAppDatabase : RoomDatabase() {
     abstract fun contatoDao(): ContatoDao
 
-    // Sem singleton por enquanto, mas adicionar antes de gravar
     companion object {
+        @Volatile
+        private var Instancia: HelloAppDatabase? = null
+
         fun getDatabase(context: Context): HelloAppDatabase {
-            return Room.databaseBuilder(
-                context,
-                HelloAppDatabase::class.java,
-                "heloApp.dp"
-            ).build()
+            return Instancia ?: synchronized(this) {
+                val instancia = Room.databaseBuilder(
+                    context.applicationContext,
+                    HelloAppDatabase::class.java,
+                    "helloApp.db"
+                ).build()
+                Instancia = instancia
+                instancia
+            }
         }
     }
 }
