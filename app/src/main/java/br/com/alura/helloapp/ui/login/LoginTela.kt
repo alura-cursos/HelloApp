@@ -2,6 +2,7 @@ package br.com.alura.helloapp.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,11 +14,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 import br.com.alura.helloapp.R
+import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import br.com.alura.helloapp.util.preferences.PreferencesKeys
 import br.com.alura.helloapp.util.preferences.dataStore
 import kotlinx.coroutines.launch
@@ -95,7 +100,7 @@ fun LoginTela(
             Text(
                 text = stringResource(id = R.string.nome_do_app),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.primaryVariant
+                color = MaterialTheme.colors.primary
             )
         }
         Column(
@@ -115,9 +120,9 @@ fun LoginTela(
                     style = MaterialTheme.typography.subtitle1,
                 )
             }
-
-
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+            val focuAtual = LocalFocusManager.current
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Person, contentDescription = null
@@ -125,7 +130,12 @@ fun LoginTela(
                 },
                 value = state.usuario,
                 onValueChange = state.onUsuarioMudou,
-                label = { Text(stringResource(id = R.string.usuario)) })
+                label = { Text(stringResource(id = R.string.usuario)) },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = (KeyboardActions(onNext = { focuAtual.moveFocus(FocusDirection.Next) }))
+            )
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -138,9 +148,12 @@ fun LoginTela(
                 onValueChange = state.onSenhaMudou,
                 label = { Text(stringResource(id = R.string.senha)) },
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = (KeyboardActions(onNext = { focuAtual.moveFocus(FocusDirection.Next) }))
             )
-
             Spacer(Modifier.height(16.dp))
             Button(
                 modifier = Modifier
@@ -158,6 +171,8 @@ fun LoginTela(
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPrev() {
-    LoginTela(state = LoginUiState())
+fun LoginPreview() {
+    HelloAppTheme {
+        LoginTela(state = LoginUiState())
+    }
 }

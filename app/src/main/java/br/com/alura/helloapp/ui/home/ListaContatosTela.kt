@@ -23,13 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
-import br.com.alura.helloapp.ListaContatos
-import br.com.alura.helloapp.Login
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.sampleData.contatosExemplo
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
-import br.com.alura.helloapp.ui.navegaDireto
+import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import br.com.alura.helloapp.util.preferences.PreferencesKeys
 import br.com.alura.helloapp.util.preferences.dataStore
 import kotlinx.coroutines.launch
@@ -54,7 +52,7 @@ fun ListaContatosTela(
                 dataStore.edit { preferences ->
                     preferences[PreferencesKeys.LOGADO] = false
                 }
-                onClickDesloga
+                onClickDesloga()
             }
 
         },
@@ -153,13 +151,17 @@ fun ContatoItem(
 @Preview
 @Composable
 fun ListaContatosPreview() {
-    ListaContatosTela(
-        state = ListaContatosUiState(contatosExemplo)
-    )
+    HelloAppTheme {
+        ListaContatosTela(
+            state = ListaContatosUiState(contatosExemplo)
+        )
+    }
 }
 
 @Preview
 @Composable
 fun ContatoItemPreview() {
-    ContatoItem(contatosExemplo.first()) {}
+    HelloAppTheme {
+        ContatoItem(contatosExemplo.first()) {}
+    }
 }

@@ -20,6 +20,7 @@ import br.com.alura.helloapp.R
 import br.com.alura.helloapp.extensions.converteParaString
 import br.com.alura.helloapp.extensions.mostraMensagem
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
+import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -232,5 +233,7 @@ fun DetalhesContatoAppBar(
 @Preview
 @Composable
 fun DetalhesContatoScreenPreview() {
-    DetalhesContatoTela(state = DetalhesContatoUiState())
+    HelloAppTheme {
+        DetalhesContatoTela(state = DetalhesContatoUiState())
+    }
 }

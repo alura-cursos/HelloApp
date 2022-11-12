@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.extensions.converteParaString
+import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import br.com.alura.helloapp.util.FORMATO_DATA_DIA_MES_ANO
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -109,5 +110,7 @@ fun CaixaDialogoImagem(
 @Preview
 @Composable
 fun CaixaDialogoImagemPreview() {
-    CaixaDialogoImagem("")
+    HelloAppTheme {
+        CaixaDialogoImagem("")
+    }
 }

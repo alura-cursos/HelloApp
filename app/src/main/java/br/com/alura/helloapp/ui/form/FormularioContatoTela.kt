@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.ui.components.CaixaDialogoImagem
 import br.com.alura.helloapp.ui.components.caixaDialogoData
+import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
@@ -217,7 +218,9 @@ fun FormularioContatoAppBar(tituloApprBar: String) {
 @Preview
 @Composable
 fun FormularioContatoTelaPreview() {
-    FormularioContatoTela(
-        state = FormularioContatoUiState()
-    )
+    HelloAppTheme {
+        FormularioContatoTela(
+            state = FormularioContatoUiState()
+        )
+    }
 }
