@@ -7,15 +7,17 @@ import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.extensions.converteParaDate
 import br.com.alura.helloapp.extensions.converteParaString
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FormularioContatoViewModel(
+@HiltViewModel
+class FormularioContatoViewModel @Inject constructor(
     private val contatoDao: ContatoDao,
-    private val idContato: Long,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FormularioContatoUiState())
@@ -23,9 +25,9 @@ class FormularioContatoViewModel(
         get() = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            carregaContato()
-        }
+//        viewModelScope.launch {
+//            carregaContato()
+//        }
 
         _uiState.update { state ->
             state.copy(onNomeMudou = {
@@ -60,7 +62,7 @@ class FormularioContatoViewModel(
         }
     }
 
-    suspend fun carregaContato() {
+    suspend fun carregaContato(idContato: Long) {
         contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
             with(contatoEncontrado) {
                 _uiState.value = _uiState.value.copy(
@@ -106,4 +108,5 @@ class FormularioContatoViewModel(
             fotoPerfil = url, mostrarCaixaDialogoImagem = false
         )
     }
+
 }

@@ -1,17 +1,21 @@
 package br.com.alura.helloapp.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import br.com.alura.helloapp.database.ContatoDao
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ListaContatosViewModel(
-    private val contatoDao: ContatoDao
+@HiltViewModel
+class ListaContatosViewModel @Inject constructor(
+    private val contatoDao: ContatoDao,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ListaContatosUiState())
@@ -33,13 +37,14 @@ class ListaContatosViewModel(
     }
 }
 
-@Suppress("UNCHECKED_CAST")
-class ListaContatosFactory(private val contatoDao: ContatoDao) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(
-        modelClass: Class<T>,
-        extras: CreationExtras
-    ): T {
-        return ListaContatosViewModel(contatoDao) as T
-    }
-}
+
+//@Suppress("UNCHECKED_CAST")
+//class ListaContatosFactory @Inject constructor(private val contatoDao: ContatoDao) :
+//    ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(
+//        modelClass: Class<T>,
+//        extras: CreationExtras
+//    ): T {
+//        return ListaContatosViewModel(contatoDao) as T
+//    }
+//}

@@ -20,10 +20,7 @@ fun helloAppViewModelFactory(
             with(modelClass) {
                 when {
                     isAssignableFrom(FormularioContatoViewModel::class.java) ->
-                        FormularioContatoViewModel(
-                            contatoDao,
-                            idContato
-                        )
+                        TODO()
                     isAssignableFrom(DetalhesContatoViewlModel::class.java) ->
                         DetalhesContatoViewlModel(
                             contatoDao,
