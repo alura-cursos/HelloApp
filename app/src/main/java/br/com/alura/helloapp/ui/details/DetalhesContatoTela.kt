@@ -25,33 +25,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DetalhesContatoTela(
-    viewModel: DetalhesContatoViewlModel,
-    modifier: Modifier = Modifier,
-    onClickApagar: () -> Unit = {},
-    onClickEditar: () -> Unit = {},
-    onClickVoltar: () -> Unit = {}
-) {
-    val state by viewModel.uiState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-
-    DetalhesContatoTela(
-        modifier = modifier,
-        state = state,
-        onApagaContato = {
-            coroutineScope.launch {
-                viewModel.removeContato()
-                context.mostraMensagem(context.getString(R.string.contato_apagado))
-            }
-            onClickApagar()
-        },
-        onClickEditar = onClickEditar,
-        onClickVoltar = onClickVoltar
-    )
-}
-
-@Composable
-fun DetalhesContatoTela(
     state: DetalhesContatoUiState,
     modifier: Modifier = Modifier,
     onClickVoltar: () -> Unit = {},

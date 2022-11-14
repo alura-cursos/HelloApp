@@ -21,12 +21,9 @@ fun helloAppViewModelFactory(
             with(modelClass) {
                 when {
                     isAssignableFrom(FormularioContatoViewModel::class.java) ->
-                        TODO()
-                    isAssignableFrom(DetalhesContatoViewlModel::class.java) ->
-                        DetalhesContatoViewlModel(
-                            contatoDao,
-                            idContato
-                        )
+                        // TODO:
+                        isAssignableFrom(DetalhesContatoViewlModel::class.java)
+                    // TODO:
                     else -> throw IllegalArgumentException("ViewModel desconhecido: ${modelClass.name}")
                 }
             } as T

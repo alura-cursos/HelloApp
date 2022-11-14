@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class FormularioLoginViewModel() : ViewModel() {
+class FormularioLoginViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(FormularioLoginUiState())
     val uiState: StateFlow<FormularioLoginUiState>

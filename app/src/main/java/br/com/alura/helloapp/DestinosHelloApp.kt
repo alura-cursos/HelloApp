@@ -2,6 +2,7 @@ package br.com.alura.helloapp
 
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import br.com.alura.helloapp.util.ID_CONTATO
 
 object DestinoInicial {
     const val rota = ListaContatos.rota
@@ -13,10 +14,9 @@ object ListaContatos {
 
 object FormularioContato {
     const val rota = "formulario_contato"
-    const val idContato = "id_contato"
-    const val rotaComArgumentos = "$rota/{$idContato}"
+    const val rotaComArgumentos = "$rota/{$ID_CONTATO}"
     val argumentos = listOf(
-        navArgument(idContato) {
+        navArgument(ID_CONTATO) {
             defaultValue = 0L
             type = NavType.LongType
         }
@@ -25,10 +25,9 @@ object FormularioContato {
 
 object DetalhesContato {
     const val rota = "detalhes_contato"
-    const val idContato = "id_contato"
-    const val rotaComArgumentos = "$rota/{$idContato}"
+    const val rotaComArgumentos = "$rota/{$ID_CONTATO}"
     val argumentos = listOf(
-        navArgument(idContato) {
+        navArgument(ID_CONTATO) {
             defaultValue = 0L
             type = NavType.LongType
         }

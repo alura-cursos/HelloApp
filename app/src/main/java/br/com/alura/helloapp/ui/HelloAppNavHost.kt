@@ -1,29 +1,33 @@
 package br.com.alura.helloapp.ui
 
-import androidx.activity.viewModels
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.os.bundleOf
-import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.compose.ui.res.stringResource
+import androidx.datastore.preferences.core.edit
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import br.com.alura.helloapp.*
-import br.com.alura.helloapp.database.HelloAppDatabase
+import br.com.alura.helloapp.R
+import br.com.alura.helloapp.extensions.mostraMensagem
 import br.com.alura.helloapp.ui.details.DetalhesContatoTela
+import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import br.com.alura.helloapp.ui.form.FormularioContatoTela
 import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 import br.com.alura.helloapp.ui.home.ListaContatosTela
 import br.com.alura.helloapp.ui.home.ListaContatosViewModel
-import br.com.alura.helloapp.ui.login.*
+import br.com.alura.helloapp.ui.login.FormularioLoginFactory
+import br.com.alura.helloapp.ui.login.FormularioLoginTela
+import br.com.alura.helloapp.ui.login.LoginFactory
+import br.com.alura.helloapp.ui.login.LoginTela
+import br.com.alura.helloapp.util.ID_CONTATO
 import br.com.alura.helloapp.util.preferences.PreferencesKeys
 import br.com.alura.helloapp.util.preferences.dataStore
+import kotlinx.coroutines.launch
 
 @Composable
 fun HelloAppNavHost(
@@ -36,10 +40,14 @@ fun HelloAppNavHost(
         modifier = modifier
     ) {
         composable(route = ListaContatos.rota) {
-
             val viewModel = hiltViewModel<ListaContatosViewModel>()
+            val state by viewModel.uiState.collectAsState()
+
+            val dataStore = LocalContext.current.dataStore
+            val scope = rememberCoroutineScope()
+
             ListaContatosTela(
-                viewModel = viewModel,
+                state = state,
                 onClickAbreDetalhes = { idContato ->
                     navController.navegaParaDetalhes(idContato)
                 },
@@ -47,10 +55,14 @@ fun HelloAppNavHost(
                     navController.navegaParaFormularioContato()
                 },
                 onClickDesloga = {
-                    navController.navegaParaLoginDeslogado()
+                    scope.launch {
+                        dataStore.edit { preferences ->
+                            preferences[PreferencesKeys.LOGADO] = false
+                        }
+                        navController.navegaParaLoginDeslogado()
+                    }
                 })
 
-            val dataStore = LocalContext.current.dataStore
 
             LaunchedEffect(null) {
                 dataStore.data.collect { preferences ->
@@ -66,15 +78,24 @@ fun HelloAppNavHost(
             arguments = FormularioContato.argumentos
         ) { navBackStackEntry ->
             navBackStackEntry.arguments?.getLong(
-                DetalhesContato.idContato
+                ID_CONTATO
             )?.let { idContato ->
 
                 val viewModel = hiltViewModel<FormularioContatoViewModel>()
+                val state by viewModel.uiState.collectAsState()
+
+                viewModel.defineTextoAniversario(
+                    stringResource(id = R.string.aniversario)
+                )
 
                 FormularioContatoTela(
-                    viewModel = viewModel,
+                    state = state,
                     onClickSalvar = {
+                        viewModel.salvaContato()
                         navController.popBackStack()
+                    },
+                    onCarregarImagem = {
+                        viewModel.carregaImagem(it)
                     }
                 )
             }
@@ -85,19 +106,26 @@ fun HelloAppNavHost(
             arguments = DetalhesContato.argumentos
         ) { navBackStackEntry ->
             navBackStackEntry.arguments?.getLong(
-                DetalhesContato.idContato
+                ID_CONTATO
             )?.let { idContato ->
 
-                val contatoDao = HelloAppDatabase.getDatabase(LocalContext.current).contatoDao()
+                val viewModel = hiltViewModel<DetalhesContatoViewlModel>()
+                val state by viewModel.uiState.collectAsState()
 
-                DetalhesContatoTela(viewModel = viewModel(
-                    factory = helloAppViewModelFactory(
-                        contatoDao, idContato
-                    )
-                ), onClickVoltar = { navController.navigateUp() },
-                    onClickApagar = {
+                val coroutineScope = rememberCoroutineScope()
+                val context = LocalContext.current
+
+                DetalhesContatoTela(
+                    state = state,
+                    onClickVoltar = { navController.navigateUp() },
+                    onApagaContato = {
+                        coroutineScope.launch {
+                            viewModel.removeContato()
+                            context.mostraMensagem(context.getString(R.string.contato_apagado))
+                        }
                         navController.navigateUp()
-                    }, onClickEditar = { navController.navegaParaFormularioContato(idContato) })
+                    },
+                    onClickEditar = { navController.navegaParaFormularioContato(idContato) })
             }
         }
 

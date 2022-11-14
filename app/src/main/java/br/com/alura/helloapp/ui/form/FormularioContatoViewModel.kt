@@ -1,16 +1,14 @@
 package br.com.alura.helloapp.ui.form
 
-import android.os.Bundle
-import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.extensions.converteParaDate
 import br.com.alura.helloapp.extensions.converteParaString
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import br.com.alura.helloapp.util.ID_CONTATO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +23,7 @@ class FormularioContatoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val idContato = savedStateHandle.get<Long>("id_contato")
+    private val idContato = savedStateHandle.get<Long>(ID_CONTATO)
 
     private val _uiState = MutableStateFlow(FormularioContatoUiState())
     val uiState: StateFlow<FormularioContatoUiState>
