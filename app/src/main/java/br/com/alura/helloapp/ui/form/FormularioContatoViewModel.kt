@@ -1,12 +1,16 @@
 package br.com.alura.helloapp.ui.form
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.os.Bundle
+import androidx.lifecycle.*
+import androidx.savedstate.SavedStateRegistryOwner
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.extensions.converteParaDate
 import br.com.alura.helloapp.extensions.converteParaString
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,19 +19,40 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class FormularioContatoViewModel @Inject constructor(
+
+class FormularioContatoViewModel @AssistedInject constructor(
     private val contatoDao: ContatoDao,
+    @Assisted private val idContato: Long,
 ) : ViewModel() {
+
+
+    @AssistedFactory
+    interface FormularioContatoViewModelFactory {
+        fun create(idContato: Long): FormularioContatoViewModel
+    }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: FormularioContatoViewModelFactory,
+            idContato: Long
+        ): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return assistedFactory.create(idContato) as T
+                }
+            }
+    }
 
     private val _uiState = MutableStateFlow(FormularioContatoUiState())
     val uiState: StateFlow<FormularioContatoUiState>
         get() = _uiState.asStateFlow()
 
+
     init {
-//        viewModelScope.launch {
-//            carregaContato()
-//        }
+        viewModelScope.launch {
+            carregaContato()
+        }
 
         _uiState.update { state ->
             state.copy(onNomeMudou = {
@@ -62,7 +87,7 @@ class FormularioContatoViewModel @Inject constructor(
         }
     }
 
-    suspend fun carregaContato(idContato: Long) {
+    suspend fun carregaContato() {
         contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
             with(contatoEncontrado) {
                 _uiState.value = _uiState.value.copy(

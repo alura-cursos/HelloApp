@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
 import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
+import dagger.hilt.android.internal.lifecycle.HiltViewModelFactory
 
 @Suppress("UNCHECKED_CAST")
 fun helloAppViewModelFactory(

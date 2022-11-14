@@ -1,11 +1,14 @@
 package br.com.alura.helloapp.ui
 
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,6 +28,7 @@ import br.com.alura.helloapp.util.preferences.dataStore
 fun HelloAppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    formularioContatoTelaViewmodelFactory: FormularioContatoViewModel.FormularioContatoViewModelFactory
 ) {
     NavHost(
         navController = navController,
@@ -64,16 +68,18 @@ fun HelloAppNavHost(
             navBackStackEntry.arguments?.getLong(
                 DetalhesContato.idContato
             )?.let { idContato ->
-
-                val testeViewmodel = hiltViewModel<FormularioContatoViewModel>()
-
-                LaunchedEffect(null) {
-                    testeViewmodel.carregaContato(idContato)
-                }
-
-                FormularioContatoTela(viewModel = testeViewmodel, onClickSalvar = {
-                    navController.popBackStack()
-                })
+                
+                FormularioContatoTela(
+                    viewModel = viewModel(
+                        factory = FormularioContatoViewModel.provideFactory(
+                            formularioContatoTelaViewmodelFactory,
+                            idContato
+                        )
+                    ),
+                    onClickSalvar = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
 
