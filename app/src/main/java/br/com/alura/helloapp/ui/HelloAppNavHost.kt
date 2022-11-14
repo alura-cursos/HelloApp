@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.os.bundleOf
 import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,7 +29,6 @@ import br.com.alura.helloapp.util.preferences.dataStore
 fun HelloAppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    formularioContatoTelaViewmodelFactory: FormularioContatoViewModel.FormularioContatoViewModelFactory
 ) {
     NavHost(
         navController = navController,
@@ -68,14 +68,11 @@ fun HelloAppNavHost(
             navBackStackEntry.arguments?.getLong(
                 DetalhesContato.idContato
             )?.let { idContato ->
-                
+
+                val viewModel = hiltViewModel<FormularioContatoViewModel>()
+
                 FormularioContatoTela(
-                    viewModel = viewModel(
-                        factory = FormularioContatoViewModel.provideFactory(
-                            formularioContatoTelaViewmodelFactory,
-                            idContato
-                        )
-                    ),
+                    viewModel = viewModel,
                     onClickSalvar = {
                         navController.popBackStack()
                     }

@@ -19,30 +19,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
-class FormularioContatoViewModel @AssistedInject constructor(
+@HiltViewModel
+class FormularioContatoViewModel @Inject constructor(
     private val contatoDao: ContatoDao,
-    @Assisted private val idContato: Long,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-
-    @AssistedFactory
-    interface FormularioContatoViewModelFactory {
-        fun create(idContato: Long): FormularioContatoViewModel
-    }
-
-    companion object {
-        fun provideFactory(
-            assistedFactory: FormularioContatoViewModelFactory,
-            idContato: Long
-        ): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return assistedFactory.create(idContato) as T
-                }
-            }
-    }
+    private val idContato = savedStateHandle.get<Long>("id_contato")
 
     private val _uiState = MutableStateFlow(FormularioContatoUiState())
     val uiState: StateFlow<FormularioContatoUiState>
@@ -88,17 +71,19 @@ class FormularioContatoViewModel @AssistedInject constructor(
     }
 
     suspend fun carregaContato() {
-        contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
-            with(contatoEncontrado) {
-                _uiState.value = _uiState.value.copy(
-                    idContato = id,
-                    nome = nome,
-                    sobrenome = sobrenome,
-                    telefone = telefone,
-                    fotoPerfil = fotoPerfil,
-                    aniversario = aniversario,
-                    tituloAppbar = R.string.titulo_activity_editar_contato
-                )
+        idContato?.let {
+            contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
+                with(contatoEncontrado) {
+                    _uiState.value = _uiState.value.copy(
+                        idContato = id,
+                        nome = nome,
+                        sobrenome = sobrenome,
+                        telefone = telefone,
+                        fotoPerfil = fotoPerfil,
+                        aniversario = aniversario,
+                        tituloAppbar = R.string.titulo_activity_editar_contato
+                    )
+                }
             }
         }
     }

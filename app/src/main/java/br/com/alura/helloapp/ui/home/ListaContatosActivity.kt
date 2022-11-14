@@ -13,15 +13,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ListaContatosActivity : ComponentActivity() {
 
-//    private val contatoDao by lazy {
-//        HelloAppDatabase.getDatabase(this).contatoDao()
-//    }
-
-
-    @Inject
-    lateinit var formularioContatoTelaViewmodelFactory: FormularioContatoViewModel.FormularioContatoViewModelFactory
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,7 +20,6 @@ class ListaContatosActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 HelloAppNavHost(
                     navController = navController,
-                    formularioContatoTelaViewmodelFactory = formularioContatoTelaViewmodelFactory
                 )
             }
         }
