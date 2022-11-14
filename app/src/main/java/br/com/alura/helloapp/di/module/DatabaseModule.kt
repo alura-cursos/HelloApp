@@ -16,7 +16,6 @@ private const val DATABASE_NAME = "helloApp.db"
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
-
     @Singleton
     @Provides
     fun provideHelloAppDatabase(@ApplicationContext context: Context): HelloAppDatabase {

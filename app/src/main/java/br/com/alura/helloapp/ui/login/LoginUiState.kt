@@ -7,7 +7,6 @@ data class LoginUiState(
     val onErro: (Boolean) -> Unit = {},
     val onUsuarioMudou: (String) -> Unit = {},
     val onSenhaMudou: (String) -> Unit = {},
-    val onClickLogar: () -> Unit = {}
-) {
-
-}
+    val onClickLogar: () -> Unit = {},
+    val logado: Boolean = false
+)

@@ -1,14 +1,21 @@
 package br.com.alura.helloapp.ui.login
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
+import br.com.alura.helloapp.util.preferences.PreferencesKeys
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class FormularioLoginViewModel : ViewModel() {
+@HiltViewModel
+class FormularioLoginViewModel @Inject constructor(
+    private val dataStore: DataStore<Preferences>
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FormularioLoginUiState())
     val uiState: StateFlow<FormularioLoginUiState>
@@ -35,15 +42,16 @@ class FormularioLoginViewModel : ViewModel() {
             )
         }
     }
-}
 
-@Suppress("UNCHECKED_CAST")
-class FormularioLoginFactory() :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(
-        modelClass: Class<T>,
-        extras: CreationExtras
-    ): T {
-        return FormularioLoginViewModel() as T
+    suspend fun salvarLogin() {
+        dataStore.edit { preferences ->
+            with(PreferencesKeys) {
+                preferences[NOME] = _uiState.value.nome
+                preferences[USUARIO] = _uiState.value.usuario
+                preferences[SENHA] = _uiState.value.senha
+                preferences[LOGADO] = true
+            }
+        }
     }
+
 }

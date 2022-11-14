@@ -36,45 +36,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LoginTela(
-    viewModel: LoginViewModel,
-    modifier: Modifier = Modifier,
-    onClickLogar: () -> Unit = {},
-    onClickCriarLogin: () -> Unit = {}
-) {
-    val state by viewModel.uiState.collectAsState()
-    val dataStore = LocalContext.current.dataStore
-    val scope = rememberCoroutineScope()
-
-    LoginTela(
-        state = state,
-        modifier = modifier,
-        onClickLogar = {
-            scope.launch {
-                dataStore.data.collect { preferences ->
-                    with(PreferencesKeys) {
-                        val usuario = preferences[USUARIO]
-                        val senha = preferences[SENHA]
-
-                        if (usuario == state.usuario && state.senha == senha) {
-                            dataStore.edit { preferences ->
-                                preferences[LOGADO] = true
-
-                            }
-                            onClickLogar()
-                        } else {
-                            state.onErro(true)
-                        }
-                    }
-                }
-            }
-
-        },
-        onClickCriarLogin = onClickCriarLogin
-    )
-}
-
-@Composable
-fun LoginTela(
     state: LoginUiState,
     modifier: Modifier = Modifier,
     onClickLogar: () -> Unit = {},

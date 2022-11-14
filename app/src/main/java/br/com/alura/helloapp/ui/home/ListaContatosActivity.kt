@@ -15,6 +15,7 @@ class ListaContatosActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             HelloAppTheme {
                 val navController = rememberNavController()

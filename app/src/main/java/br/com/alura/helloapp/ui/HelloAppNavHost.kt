@@ -1,10 +1,12 @@
 package br.com.alura.helloapp.ui
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.datastore.preferences.core.edit
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -12,7 +14,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import br.com.alura.helloapp.*
-import br.com.alura.helloapp.R
 import br.com.alura.helloapp.extensions.mostraMensagem
 import br.com.alura.helloapp.ui.details.DetalhesContatoTela
 import br.com.alura.helloapp.ui.details.DetalhesContatoViewlModel
@@ -20,13 +21,9 @@ import br.com.alura.helloapp.ui.form.FormularioContatoTela
 import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 import br.com.alura.helloapp.ui.home.ListaContatosTela
 import br.com.alura.helloapp.ui.home.ListaContatosViewModel
-import br.com.alura.helloapp.ui.login.FormularioLoginFactory
-import br.com.alura.helloapp.ui.login.FormularioLoginTela
-import br.com.alura.helloapp.ui.login.LoginFactory
-import br.com.alura.helloapp.ui.login.LoginTela
+import br.com.alura.helloapp.ui.login.*
+
 import br.com.alura.helloapp.util.ID_CONTATO
-import br.com.alura.helloapp.util.preferences.PreferencesKeys
-import br.com.alura.helloapp.util.preferences.dataStore
 import kotlinx.coroutines.launch
 
 @Composable
@@ -43,7 +40,6 @@ fun HelloAppNavHost(
             val viewModel = hiltViewModel<ListaContatosViewModel>()
             val state by viewModel.uiState.collectAsState()
 
-            val dataStore = LocalContext.current.dataStore
             val scope = rememberCoroutineScope()
 
             ListaContatosTela(
@@ -56,20 +52,12 @@ fun HelloAppNavHost(
                 },
                 onClickDesloga = {
                     scope.launch {
-                        dataStore.edit { preferences ->
-                            preferences[PreferencesKeys.LOGADO] = false
-                        }
-                        navController.navegaParaLoginDeslogado()
+                        viewModel.desloga()
                     }
                 })
 
-
-            LaunchedEffect(null) {
-                dataStore.data.collect { preferences ->
-                    if (preferences[PreferencesKeys.LOGADO] == false) {
-                        navController.navegaParaLoginDeslogado()
-                    }
-                }
+            if (!state.logado) {
+                navController.navegaParaLoginDeslogado()
             }
         }
 
@@ -117,13 +105,13 @@ fun HelloAppNavHost(
 
                 DetalhesContatoTela(
                     state = state,
-                    onClickVoltar = { navController.navigateUp() },
+                    onClickVoltar = { navController.popBackStack() },
                     onApagaContato = {
                         coroutineScope.launch {
                             viewModel.removeContato()
                             context.mostraMensagem(context.getString(R.string.contato_apagado))
                         }
-                        navController.navigateUp()
+                        navController.popBackStack()
                     },
                     onClickEditar = { navController.navegaParaFormularioContato(idContato) })
             }
@@ -132,22 +120,43 @@ fun HelloAppNavHost(
         composable(
             route = Login.rota,
         ) {
+            val viewModel = hiltViewModel<LoginViewModel>()
+            val state by viewModel.uiState.collectAsState()
+
+            val coroutineScope = rememberCoroutineScope()
+
             LoginTela(
-                viewModel = viewModel(factory = LoginFactory()),
+                state = state,
                 onClickLogar = {
+                    coroutineScope.launch {
+                        viewModel.logar()
+                    }
+
                     navController.navegaParaListaPosLogin()
                 },
                 onClickCriarLogin = {
                     navController.navegaDireto(FormularioLogin.rota)
                 })
+
+            if (state.logado){
+                navController.navegaParaListaPosLogin()
+            }
         }
 
         composable(
             route = FormularioLogin.rota,
         ) { navBackStackEntry ->
+            val viewModel = hiltViewModel<FormularioLoginViewModel>()
+
+            val state by viewModel.uiState.collectAsState()
+            val scope = rememberCoroutineScope()
+
             FormularioLoginTela(
-                viewModel = viewModel(factory = FormularioLoginFactory()),
-                onClickSalvar = {
+                state = state,
+                onSalvar = {
+                    scope.launch {
+                        viewModel.salvarLogin()
+                    }
                     navController.navegaDireto(Login.rota)
                 })
         }

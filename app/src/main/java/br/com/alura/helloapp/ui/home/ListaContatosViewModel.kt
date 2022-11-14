@@ -1,8 +1,12 @@
 package br.com.alura.helloapp.ui.home
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.database.ContatoDao
+import br.com.alura.helloapp.util.preferences.PreferencesKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ListaContatosViewModel @Inject constructor(
     private val contatoDao: ContatoDao,
+    private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ListaContatosUiState())
@@ -21,14 +26,34 @@ class ListaContatosViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            verificaLogin()
+        }
+        viewModelScope.launch {
             buscaProdutos()
         }
     }
 
     private suspend fun buscaProdutos() {
-        contatoDao.buscaTodos().collect() {
+        contatoDao.buscaTodos().collect {
             _uiState.value = _uiState.value.copy(
                 contatos = it
+            )
+        }
+    }
+
+    suspend fun desloga() {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.LOGADO] = false
+            _uiState.value = _uiState.value.copy(
+                logado = false
+            )
+        }
+    }
+
+    suspend fun verificaLogin() {
+        dataStore.data.collect { preferences ->
+            _uiState.value = _uiState.value.copy(
+                logado = preferences[PreferencesKeys.LOGADO] == true
             )
         }
     }
