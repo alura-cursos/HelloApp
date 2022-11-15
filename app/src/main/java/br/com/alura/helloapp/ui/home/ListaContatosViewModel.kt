@@ -26,9 +26,6 @@ class ListaContatosViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            verificaLogin()
-        }
-        viewModelScope.launch {
             buscaProdutos()
         }
     }
@@ -46,14 +43,6 @@ class ListaContatosViewModel @Inject constructor(
             preferences[PreferencesKeys.LOGADO] = false
             _uiState.value = _uiState.value.copy(
                 logado = false
-            )
-        }
-    }
-
-    suspend fun verificaLogin() {
-        dataStore.data.collect { preferences ->
-            _uiState.value = _uiState.value.copy(
-                logado = preferences[PreferencesKeys.LOGADO] == true
             )
         }
     }
