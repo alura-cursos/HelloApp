@@ -14,7 +14,7 @@ sealed class DestinosHelloApp(val rota: String) {
 }
 
 object DestinoInicial {
-    val rota = DestinosHelloApp.ListaContatos.rota
+    val rota = DestinosHelloApp.LoginGraph.rota
 }
 
 object FormularioContato {

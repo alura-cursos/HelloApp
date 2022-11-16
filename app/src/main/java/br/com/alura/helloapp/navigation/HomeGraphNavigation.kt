@@ -21,7 +21,7 @@ fun NavGraphBuilder.homeGraph(
     navController: NavHostController
 ) {
     navigation(
-        startDestination = DestinoInicial.rota,
+        startDestination = DestinosHelloApp.ListaContatos.rota,
         route = DestinosHelloApp.HomeGraph.rota,
     ) {
         composable(route = DestinosHelloApp.ListaContatos.rota) {

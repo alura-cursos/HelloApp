@@ -11,14 +11,14 @@ import br.com.alura.helloapp.navigation.*
 @Composable
 fun HelloAppNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
+    destinoInicial: String,
+    modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = DestinosHelloApp.SplashScreen.rota,
+        startDestination = destinoInicial,
         modifier = modifier
     ) {
-        splashGraph(navController)
         homeGraph(navController)
         formularioContatoGraph(navController)
         detalhesContatoGraph(navController)
