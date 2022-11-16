@@ -7,10 +7,7 @@ HelloApp é aplicativo de mensagens de agenda quer permite salvar contatos com n
 Feito em Jetpack Compose, o aplicativo utiliza muitas das técnicas mais atuais para desenvolvimento Android.
 
 
-
-
-https://user-images.githubusercontent.com/35709152/199604155-e6743f5c-ede3-4416-915e-db7d71978aec.mp4
-
+https://user-images.githubusercontent.com/35709152/202213713-3e9e0242-f861-4061-8f69-ec934460a9bb.mp4
 
 
 ***🚧 Trabalho em progresso 🚧***
