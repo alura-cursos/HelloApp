@@ -21,15 +21,7 @@ class ListaContatosActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition {
-            splashScreenViewModel.uiState.value.carregando
-        }
-        splashScreen.setOnExitAnimationListener {
-            it.remove()
-            // Esse bloco só necessário porque setKeepOnScreenCondition
-            // remove mais cedo do que o esperado atualmente
-        }
+        gerenciaSplashScreen()
 
         setContent {
             HelloAppTheme {
@@ -42,6 +34,16 @@ class ListaContatosActivity : ComponentActivity() {
                     destinoInicial = destinoInicial
                 )
             }
+        }
+    }
+
+    private fun gerenciaSplashScreen() {
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition {
+            splashScreenViewModel.uiState.value.carregando
+        }
+        splashScreen.setOnExitAnimationListener {
+            it.remove()
         }
     }
 }

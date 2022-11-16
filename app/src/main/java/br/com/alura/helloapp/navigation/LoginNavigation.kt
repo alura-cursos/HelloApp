@@ -36,9 +36,10 @@ fun NavGraphBuilder.loginGraph(
                 onClickLogar = {
                     scope.launch {
                         viewModel.logar()
+                    }
+                    if (state.logado) {
                         navController.navegaParaListaPosLogin()
                     }
-                    navController.navegaParaListaPosLogin()
                 },
                 onClickCriarLogin = {
                     navController.navegaDireto(DestinosHelloApp.FormularioLogin.rota)
@@ -59,7 +60,7 @@ fun NavGraphBuilder.loginGraph(
                     scope.launch {
                         viewModel.salvarLogin()
                     }
-                    navController.navegaDireto(DestinosHelloApp.Login.rota)
+                    navController.navegaDireto(DestinosHelloApp.LoginGraph.rota)
                 }
             )
         }

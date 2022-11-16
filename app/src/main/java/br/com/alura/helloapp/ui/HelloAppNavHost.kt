@@ -49,6 +49,6 @@ fun NavHostController.navegaParaLoginDeslogado() {
 }
 
 fun NavHostController.navegaParaListaPosLogin() {
-    this.popBackStack(DestinosHelloApp.Login.rota, true)
-    this.navegaDireto(DestinosHelloApp.ListaContatos.rota)
+    this.popBackStack(DestinosHelloApp.LoginGraph.rota, true)
+    this.navegaDireto(DestinosHelloApp.HomeGraph.rota)
 }

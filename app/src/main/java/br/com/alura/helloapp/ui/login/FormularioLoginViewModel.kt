@@ -49,7 +49,6 @@ class FormularioLoginViewModel @Inject constructor(
                 preferences[NOME] = _uiState.value.nome
                 preferences[USUARIO] = _uiState.value.usuario
                 preferences[SENHA] = _uiState.value.senha
-                preferences[LOGADO] = true
             }
         }
     }
