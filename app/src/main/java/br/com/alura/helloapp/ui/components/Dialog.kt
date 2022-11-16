@@ -42,9 +42,9 @@ fun caixaDialogoData(
 
     val datePickerDialog = DatePickerDialog(
         context, { _: DatePicker, ano, mes, dia ->
-            val dataSelecionada = LocalDate.parse("$dia/$mes/$ano", formatadorDeData)
+            val dataSelecionada = LocalDate.parse("$dia/${mes + 1}/$ano", formatadorDeData)
             onClickDataSelecionada(dataSelecionada.format(formatadorDeData))
-        }, anoAtual, mesAtual, diaAtual
+        }, anoAtual, (mesAtual - 1), diaAtual
     )
 
     datePickerDialog.setOnDismissListener {
