@@ -1,7 +1,9 @@
 package br.com.alura.helloapp.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -26,10 +28,13 @@ fun NavGraphBuilder.formularioContatoGraph(
 
             val viewModel = hiltViewModel<FormularioContatoViewModel>()
             val state by viewModel.uiState.collectAsState()
+            val context = LocalContext.current
 
-            viewModel.defineTextoAniversario(
-                stringResource(id = R.string.aniversario)
-            )
+            LaunchedEffect(Unit) {
+                viewModel.defineTextoAniversario(
+                    context.getString(R.string.aniversario)
+                )
+            }
 
             FormularioContatoTela(
                 state = state,

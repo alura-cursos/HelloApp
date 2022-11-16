@@ -36,19 +36,19 @@ fun NavHostController.navegaDireto(route: String) = this.navigate(route) {
 }
 
 fun NavHostController.navegaParaDetalhes(idContato: Long) {
-    this.navegaDireto("${DetalhesContato.rota}/$idContato")
+    navegaDireto("${DetalhesContato.rota}/$idContato")
 }
 
 fun NavHostController.navegaParaFormularioContato(idContato: Long = 0L) {
-    this.navigate("${FormularioContato.rota}/$idContato")
+    navigate("${FormularioContato.rota}/$idContato")
 }
 
 fun NavHostController.navegaParaLoginDeslogado() {
-    this.popBackStack(DestinosHelloApp.ListaContatos.rota, true)
-    this.navegaDireto(DestinosHelloApp.LoginGraph.rota)
+    popBackStack(DestinosHelloApp.ListaContatos.rota, true)
+    navegaDireto(DestinosHelloApp.LoginGraph.rota)
 }
 
 fun NavHostController.navegaParaListaPosLogin() {
-    this.popBackStack(DestinosHelloApp.LoginGraph.rota, true)
-    this.navegaDireto(DestinosHelloApp.HomeGraph.rota)
+    popBackStack(DestinosHelloApp.LoginGraph.rota, true)
+    navegaDireto(DestinosHelloApp.HomeGraph.rota)
 }

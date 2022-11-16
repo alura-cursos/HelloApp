@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.DestinosHelloApp
 import br.com.alura.helloapp.util.preferences.PreferencesKeys.LOGADO
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
@@ -25,11 +27,11 @@ class SplashScreenViewModel @Inject constructor(
             dataStore.data.collect { preferences ->
                 if (preferences[LOGADO] == true) {
                     _uiState.value = _uiState.value.copy(
-                        destino_inicial = DestinosHelloApp.HomeGraph.rota
+                        destinoInicial = DestinosHelloApp.HomeGraph.rota
                     )
                 } else {
                     _uiState.value = _uiState.value.copy(
-                        destino_inicial = DestinosHelloApp.LoginGraph.rota
+                        destinoInicial = DestinosHelloApp.LoginGraph.rota
                     )
                 }
 

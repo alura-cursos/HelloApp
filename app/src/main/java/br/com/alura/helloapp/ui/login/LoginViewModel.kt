@@ -4,14 +4,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.util.preferences.PreferencesKeys
+import br.com.alura.helloapp.util.preferences.PreferencesKeys.LOGADO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,24 +44,28 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    suspend fun logar() {
+    suspend fun tentaLogar() {
         dataStore.data.collect { preferences ->
             with(PreferencesKeys) {
                 val usuario = preferences[USUARIO]
                 val senha = preferences[SENHA]
 
                 if (usuario == _uiState.value.usuario && _uiState.value.senha == senha) {
-                    dataStore.edit { preferences ->
-                        preferences[LOGADO] = true
-                    }
-                    _uiState.value = _uiState.value.copy(
-                        logado = true
-                    )
+                    logaUsuario()
                 } else {
                     _uiState.value.onErro(true)
                 }
             }
         }
+    }
+
+    private suspend fun logaUsuario() {
+        dataStore.edit { preferences ->
+            preferences[LOGADO] = true
+        }
+        _uiState.value = _uiState.value.copy(
+            logado = true
+        )
     }
 }
 

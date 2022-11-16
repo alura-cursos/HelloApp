@@ -35,7 +35,7 @@ fun NavGraphBuilder.loginGraph(
                 state = state,
                 onClickLogar = {
                     scope.launch {
-                        viewModel.logar()
+                        viewModel.tentaLogar()
                     }
                     if (state.logado) {
                         navController.navegaParaListaPosLogin()
