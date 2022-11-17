@@ -1,5 +1,6 @@
 package br.com.alura.helloapp.ui.form
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.R
@@ -7,20 +8,27 @@ import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.extensions.converteParaDate
 import br.com.alura.helloapp.extensions.converteParaString
+import br.com.alura.helloapp.util.ID_CONTATO
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FormularioContatoViewModel(
+@HiltViewModel
+class FormularioContatoViewModel @Inject constructor(
     private val contatoDao: ContatoDao,
-    private val idContato: Long,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val idContato = savedStateHandle.get<Long>(ID_CONTATO)
 
     private val _uiState = MutableStateFlow(FormularioContatoUiState())
     val uiState: StateFlow<FormularioContatoUiState>
         get() = _uiState.asStateFlow()
+
 
     init {
         viewModelScope.launch {
@@ -61,17 +69,19 @@ class FormularioContatoViewModel(
     }
 
     suspend fun carregaContato() {
-        contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
-            with(contatoEncontrado) {
-                _uiState.value = _uiState.value.copy(
-                    idContato = id,
-                    nome = nome,
-                    sobrenome = sobrenome,
-                    telefone = telefone,
-                    fotoPerfil = fotoPerfil,
-                    aniversario = aniversario,
-                    tituloAppbar = R.string.titulo_activity_editar_contato
-                )
+        idContato?.let {
+            contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
+                with(contatoEncontrado) {
+                    _uiState.value = _uiState.value.copy(
+                        idContato = id,
+                        nome = nome,
+                        sobrenome = sobrenome,
+                        telefone = telefone,
+                        fotoPerfil = fotoPerfil,
+                        aniversario = aniversario,
+                        tituloAppbar = R.string.titulo_activity_editar_contato
+                    )
+                }
             }
         }
     }
@@ -106,4 +116,5 @@ class FormularioContatoViewModel(
             fotoPerfil = url, mostrarCaixaDialogoImagem = false
         )
     }
+
 }

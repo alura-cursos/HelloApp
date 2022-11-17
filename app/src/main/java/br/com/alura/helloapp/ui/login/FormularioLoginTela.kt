@@ -10,14 +10,10 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,41 +22,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.edit
 import br.com.alura.helloapp.R
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
-import br.com.alura.helloapp.util.preferences.PreferencesKeys
-import br.com.alura.helloapp.util.preferences.dataStore
-import kotlinx.coroutines.launch
 
-@Composable
-fun FormularioLoginTela(
-    viewModel: FormularioLoginViewModel,
-    modifier: Modifier = Modifier,
-    onClickSalvar: () -> Unit = {},
-) {
-    val state by viewModel.uiState.collectAsState()
-    val dataStore = LocalContext.current.dataStore
-    val scope = rememberCoroutineScope()
-
-    FormularioLoginTela(
-        state = state,
-        modifier = modifier,
-        onSalvar = {
-            scope.launch {
-                dataStore.edit { preferences ->
-                    with(PreferencesKeys) {
-                        preferences[NOME] = state.nome
-                        preferences[USUARIO] = state.usuario
-                        preferences[SENHA] = state.senha
-                        preferences[LOGADO] = true
-                    }
-                }
-            }
-            onClickSalvar()
-        }
-    )
-}
 
 @Composable
 fun FormularioLoginTela(

@@ -2,21 +2,25 @@ package br.com.alura.helloapp
 
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import br.com.alura.helloapp.util.ID_CONTATO
 
-object DestinoInicial {
-    const val rota = ListaContatos.rota
+sealed class DestinosHelloApp(val rota: String) {
+    object LoginGraph : DestinosHelloApp("grafico_login")
+    object HomeGraph : DestinosHelloApp("grafico_home")
+    object ListaContatos : DestinosHelloApp("lista_contatos")
+    object FormularioLogin : DestinosHelloApp("formulario_login")
+    object Login : DestinosHelloApp("login")
 }
 
-object ListaContatos {
-    const val rota = "lista_contatos"
+object DestinoInicial {
+    val rota = DestinosHelloApp.LoginGraph.rota
 }
 
 object FormularioContato {
     const val rota = "formulario_contato"
-    const val idContato = "id_contato"
-    const val rotaComArgumentos = "$rota/{$idContato}"
+    const val rotaComArgumentos = "$rota/{$ID_CONTATO}"
     val argumentos = listOf(
-        navArgument(idContato) {
+        navArgument(ID_CONTATO) {
             defaultValue = 0L
             type = NavType.LongType
         }
@@ -25,20 +29,12 @@ object FormularioContato {
 
 object DetalhesContato {
     const val rota = "detalhes_contato"
-    const val idContato = "id_contato"
-    const val rotaComArgumentos = "$rota/{$idContato}"
+    const val rotaComArgumentos = "$rota/{$ID_CONTATO}"
     val argumentos = listOf(
-        navArgument(idContato) {
+        navArgument(ID_CONTATO) {
             defaultValue = 0L
             type = NavType.LongType
         }
     )
 }
 
-object FormularioLogin {
-    const val rota = "formulario_login"
-}
-
-object Login {
-    const val rota = "login"
-}

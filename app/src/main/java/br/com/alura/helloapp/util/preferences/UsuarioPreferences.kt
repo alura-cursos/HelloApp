@@ -14,5 +14,4 @@ object PreferencesKeys {
     val NOME = stringPreferencesKey("nome")
     val USUARIO = stringPreferencesKey("usuario")
     val SENHA =  stringPreferencesKey("senha")
-
 }

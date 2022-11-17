@@ -1,16 +1,23 @@
 package br.com.alura.helloapp.ui.login
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
+import br.com.alura.helloapp.util.preferences.PreferencesKeys
+import br.com.alura.helloapp.util.preferences.PreferencesKeys.LOGADO
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel() : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val dataStore: DataStore<Preferences>
+) : ViewModel() {
+
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState>
         get() = _uiState.asStateFlow()
@@ -37,19 +44,29 @@ class LoginViewModel() : ViewModel() {
         }
     }
 
-    fun fazerLogin() {
-        viewModelScope.launch {
+    suspend fun tentaLogar() {
+        dataStore.data.collect { preferences ->
+            with(PreferencesKeys) {
+                val usuario = preferences[USUARIO]
+                val senha = preferences[SENHA]
+
+                if (usuario == _uiState.value.usuario && _uiState.value.senha == senha) {
+                    logaUsuario()
+                } else {
+                    _uiState.value.onErro(true)
+                }
+            }
         }
+    }
+
+    private suspend fun logaUsuario() {
+        dataStore.edit { preferences ->
+            preferences[LOGADO] = true
+        }
+        _uiState.value = _uiState.value.copy(
+            logado = true
+        )
     }
 }
 
-@Suppress("UNCHECKED_CAST")
-class LoginFactory() :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(
-        modelClass: Class<T>,
-        extras: CreationExtras
-    ): T {
-        return LoginViewModel() as T
-    }
-}
+

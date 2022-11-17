@@ -11,8 +11,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,31 +31,6 @@ import br.com.alura.helloapp.ui.components.caixaDialogoData
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-
-@Composable
-fun FormularioContatoTela(
-    viewModel: FormularioContatoViewModel,
-    modifier: Modifier = Modifier,
-    onClickSalvar: () -> Unit = {},
-) {
-    val state by viewModel.uiState.collectAsState()
-
-    viewModel.defineTextoAniversario(
-        stringResource(id = R.string.aniversario)
-    )
-
-    FormularioContatoTela(
-        state = state,
-        modifier = modifier,
-        onClickSalvar = {
-            onClickSalvar()
-            viewModel.salvaContato()
-        },
-        onCarregarImagem = {
-            viewModel.carregaImagem(it)
-        })
-
-}
 
 @Composable
 fun FormularioContatoTela(

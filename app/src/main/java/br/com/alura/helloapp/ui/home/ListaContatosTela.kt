@@ -34,40 +34,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ListaContatosTela(
-    viewModel: ListaContatosViewModel,
-    modifier: Modifier = Modifier,
-    onClickDesloga: () -> Unit = {},
-    onClickAbreDetalhes: (Long) -> Unit = {},
-    onClickAbreCadastro: () -> Unit = {}
-) {
-    val state by viewModel.uiState.collectAsState()
-    val dataStore = LocalContext.current.dataStore
-    val scope = rememberCoroutineScope()
-
-    ListaContatosTela(
-        modifier = modifier,
-        state = state,
-        onClickDesloga = {
-            scope.launch {
-                dataStore.edit { preferences ->
-                    preferences[PreferencesKeys.LOGADO] = false
-                }
-                onClickDesloga()
-            }
-
-        },
-        onClickAbreDetalhes = onClickAbreDetalhes,
-        onClickAbreCadastro = onClickAbreCadastro
-    )
-}
-
-@Composable
-fun ListaContatosTela(
     state: ListaContatosUiState,
     modifier: Modifier = Modifier,
     onClickDesloga: () -> Unit = {},
     onClickAbreDetalhes: (Long) -> Unit = {},
-    onClickAbreCadastro: () -> Unit = {}
+    onClickAbreCadastro: () -> Unit = {},
 ) {
     Scaffold(
         topBar = { AppBarListaContatos(onClickDesloga = onClickDesloga) },
