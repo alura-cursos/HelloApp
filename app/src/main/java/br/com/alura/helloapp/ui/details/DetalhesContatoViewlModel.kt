@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,20 +31,21 @@ class DetalhesContatoViewlModel @Inject constructor(
         }
     }
 
-    suspend fun carregaContato() {
+    private suspend fun carregaContato() {
         idContato?.let {
-            contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
-                with(contatoEncontrado) {
-                    _uiState.value = _uiState.value.copy(
-                        id = id,
-                        nome = nome,
-                        sobrenome = sobrenome,
-                        telefone = telefone,
-                        fotoPerfil = fotoPerfil,
-                        aniversario = aniversario
-                    )
+            contatoDao.buscaPorId(idContato).collect { contatoEncontrado ->
+                contatoEncontrado?.let {
+                    with(contatoEncontrado) {
+                        _uiState.value = _uiState.value.copy(
+                            id = id,
+                            nome = nome,
+                            sobrenome = sobrenome,
+                            telefone = telefone,
+                            fotoPerfil = fotoPerfil,
+                            aniversario = aniversario
+                        )
+                    }
                 }
-
             }
         }
     }

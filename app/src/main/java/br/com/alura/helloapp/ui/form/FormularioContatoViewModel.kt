@@ -68,19 +68,21 @@ class FormularioContatoViewModel @Inject constructor(
         }
     }
 
-    suspend fun carregaContato() {
+    private suspend fun carregaContato() {
         idContato?.let {
-            contatoDao.buscaPorId(idContato)?.let { contatoEncontrado ->
-                with(contatoEncontrado) {
-                    _uiState.value = _uiState.value.copy(
-                        idContato = id,
-                        nome = nome,
-                        sobrenome = sobrenome,
-                        telefone = telefone,
-                        fotoPerfil = fotoPerfil,
-                        aniversario = aniversario,
-                        tituloAppbar = R.string.titulo_activity_editar_contato
-                    )
+            contatoDao.buscaPorId(idContato)?.collect { contatoEncontrado ->
+                contatoEncontrado?.let {
+                    with(contatoEncontrado) {
+                        _uiState.value = _uiState.value.copy(
+                            idContato = id,
+                            nome = nome,
+                            sobrenome = sobrenome,
+                            telefone = telefone,
+                            fotoPerfil = fotoPerfil,
+                            aniversario = aniversario,
+                            tituloAppbar = R.string.titulo_activity_editar_contato
+                        )
+                    }
                 }
             }
         }

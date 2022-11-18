@@ -4,7 +4,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -30,7 +29,8 @@ fun NavGraphBuilder.formularioContatoGraph(
             val state by viewModel.uiState.collectAsState()
             val context = LocalContext.current
 
-            LaunchedEffect(Unit) {
+
+            LaunchedEffect(state.aniversario) {
                 viewModel.defineTextoAniversario(
                     context.getString(R.string.aniversario)
                 )
