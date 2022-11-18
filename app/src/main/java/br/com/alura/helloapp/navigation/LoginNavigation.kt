@@ -1,5 +1,6 @@
 package br.com.alura.helloapp.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -13,8 +14,7 @@ import br.com.alura.helloapp.ui.login.FormularioLoginTela
 import br.com.alura.helloapp.ui.login.FormularioLoginViewModel
 import br.com.alura.helloapp.ui.login.LoginTela
 import br.com.alura.helloapp.ui.login.LoginViewModel
-import br.com.alura.helloapp.ui.navegaDireto
-import br.com.alura.helloapp.ui.navegaParaListaPosLogin
+import br.com.alura.helloapp.ui.navegaLimpo
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.loginGraph(
@@ -31,18 +31,21 @@ fun NavGraphBuilder.loginGraph(
             val state by viewModel.uiState.collectAsState()
             val scope = rememberCoroutineScope()
 
+            if (state.logado) {
+                LaunchedEffect(Unit) {
+                    navController.navegaLimpo(DestinosHelloApp.HomeGraph.rota)
+                }
+            }
+
             LoginTela(
                 state = state,
                 onClickLogar = {
                     scope.launch {
                         viewModel.tentaLogar()
                     }
-                    if (state.logado) {
-                        navController.navegaParaListaPosLogin()
-                    }
                 },
                 onClickCriarLogin = {
-                    navController.navegaDireto(DestinosHelloApp.FormularioLogin.rota)
+                    navController.navigate(DestinosHelloApp.FormularioLogin.rota)
                 }
             )
         }
@@ -60,7 +63,7 @@ fun NavGraphBuilder.loginGraph(
                     scope.launch {
                         viewModel.salvarLogin()
                     }
-                    navController.navegaDireto(DestinosHelloApp.LoginGraph.rota)
+                    navController.navegaLimpo(DestinosHelloApp.Login.rota)
                 }
             )
         }
