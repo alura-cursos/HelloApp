@@ -1,0 +1,31 @@
+<resources>
+    <string name="nome_do_app">HelloApp </string>
+    <string name="titulo_cadastro_contato">Adicionar contato</string>
+    <string name="titulo_editar_contato">Editar contato</string>
+    <string name="nome">Nome</string>
+    <string name="sobrenome">Sobrenome</string>
+    <string name="telefone">Telefone</string>
+    <string name="salvar">Salvar</string>
+    <string name="link_imagem">Link da imagem</string>
+    <string name="mensagem">Mensagem</string>
+    <string name="ligar">Ligar</string>
+    <string name="informacoes">Informações</string>
+    <string name="nome_completo">Nome completo</string>
+    <string name="senha">Senha</string>
+    <string name="usuario">Usuário</string>
+    <string name="entrar">Entrar</string>
+    <string name="criar_nova_conta">Criar conta</string>
+    <string name="criar">Criar</string>
+    <string name="aniversario">Aniversário</string>
+    <string name="foto_perfil_contato">Foto de perfil do contato</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="adicionar_foto">Adicionar foto</string>
+    <string name="contato_apagado">Contato apagado</string>
+    <string name="voltar">Voltar</string>
+    <string name="editar">Editar</string>
+    <string name="deletar">Deletar</string>
+    <string name="adicionar_novo_contato">Adicionar novo contato</string>
+    <string name="deslogar">Deslogar</string>
+    <string name="usuario_ou_senha_incorreto">Usuário ou senha incorreto</string>
+    <string name="logo_do_app">Logo do aplicativo</string>
+</resources>
