@@ -9,8 +9,8 @@ import br.com.alura.helloapp.data.Contato
 interface ContatoDao {
 
     @Insert
-    fun insere(contato: Contato)
+    suspend fun insere(contato: Contato)
 
     @Query("SELECT * FROM Contato")
-    fun buscaTodos(): List<Contato>
+    suspend fun buscaTodos(): List<Contato>
 }
