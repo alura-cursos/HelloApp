@@ -3,6 +3,7 @@ package br.com.alura.helloapp.navigation
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -10,9 +11,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import br.com.alura.helloapp.FormularioContato
 import br.com.alura.helloapp.R
+import br.com.alura.helloapp.data.Contato
+import br.com.alura.helloapp.database.HelloAppDatabase
 import br.com.alura.helloapp.ui.form.FormularioContatoTela
 import br.com.alura.helloapp.ui.form.FormularioContatoViewModel
 import br.com.alura.helloapp.util.ID_CONTATO
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.formularioContatoGraph(
     navController: NavHostController
@@ -35,9 +39,27 @@ fun NavGraphBuilder.formularioContatoGraph(
                 )
             }
 
+            val contatoDao = HelloAppDatabase.getDatabase(context).contatoDao()
+
+            val coroutineScope = rememberCoroutineScope()
+
             FormularioContatoTela(
                 state = state,
                 onClickSalvar = {
+                    with(state) {
+                        coroutineScope.launch {
+                            contatoDao.insere(
+                                Contato(
+                                    nome = nome,
+                                    sobrenome = sobrenome,
+                                    telefone = telefone,
+                                    fotoPerfil = fotoPerfil,
+                                    aniversario = aniversario
+                                )
+                            )
+                        }
+                    }
+
                     navController.popBackStack()
                 },
                 onCarregarImagem = {
