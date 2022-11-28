@@ -39,6 +39,7 @@ fun NavGraphBuilder.detalhesContatoGraph(
                 onClickVoltar = { navController.popBackStack() },
                 onApagaContato = {
                     scope.launch {
+                        viewModel.removeContato()
                         context.mostraMensagem(context.getString(R.string.contato_apagado))
                     }
                     navController.popBackStack()

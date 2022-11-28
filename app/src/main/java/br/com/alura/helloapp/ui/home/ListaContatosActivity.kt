@@ -20,14 +20,6 @@ class ListaContatosActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val contatoDao = HelloAppDatabase.getDatabase(this).contatoDao()
-
-        CoroutineScope(IO).launch {
-            //contatoDao.insere(contatosExemplo.first())
-            val contatos = contatoDao.buscaTodos()
-            Log.i("onCreate", "onCreate: $contatos")
-        }
-
         setContent {
             HelloAppTheme {
                 val navController = rememberNavController()

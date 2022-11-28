@@ -33,21 +33,24 @@ class DetalhesContatoViewlModel @Inject constructor(
     private suspend fun carregaContato() {
         idContato?.let {
             val contato = contatoDao.buscaPorId(idContato)
-            contato?.let {
-                with(it) {
-                    _uiState.value = _uiState.value.copy(
-                        id = id,
-                        nome = nome,
-                        sobrenome = sobrenome,
-                        aniversario = aniversario,
-                        telefone = telefone,
-                        fotoPerfil = fotoPerfil
-                    )
+            contato.collect {
+                it?.let {
+                    with(it) {
+                        _uiState.value = _uiState.value.copy(
+                            id = id,
+                            nome = nome,
+                            sobrenome = sobrenome,
+                            aniversario = aniversario,
+                            telefone = telefone,
+                            fotoPerfil = fotoPerfil
+                        )
+                    }
                 }
             }
         }
     }
 
     suspend fun removeContato() {
+        idContato?.let { contatoDao.deleta(it) }
     }
 }
