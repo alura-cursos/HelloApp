@@ -44,9 +44,7 @@ class DetalhesContatoViewlModel @Inject constructor(
                         fotoPerfil = fotoPerfil
                     )
                 }
-
             }
-
         }
     }
 
