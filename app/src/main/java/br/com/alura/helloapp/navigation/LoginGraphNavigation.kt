@@ -60,16 +60,6 @@ fun NavGraphBuilder.loginGraph(
                 }
             )
 
-            LaunchedEffect(Unit) {
-                coroutineScope.launch {
-                    dataStore.data.collect { preferences ->
-                        val logado = preferences[booleanPreferencesKey("logado")]
-                        if (logado == true) {
-                            navController.navegaLimpo(DestinosHelloApp.HomeGraph.rota)
-                        }
-                    }
-                }
-            }
         }
 
         composable(
