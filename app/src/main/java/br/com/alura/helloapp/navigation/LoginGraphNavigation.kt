@@ -7,12 +7,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import br.com.alura.helloapp.DestinosHelloApp
+import br.com.alura.helloapp.preferences.PreferencesKey.SENHA
+import br.com.alura.helloapp.preferences.PreferencesKey.USUARIO
 import br.com.alura.helloapp.preferences.dataStore
 import br.com.alura.helloapp.ui.login.FormularioLoginTela
 import br.com.alura.helloapp.ui.login.FormularioLoginViewModel
@@ -49,11 +52,22 @@ fun NavGraphBuilder.loginGraph(
                 state = state,
                 onClickLogar = {
                     coroutineScope.launch {
-                        dataStore.edit { preferences ->
-                            preferences[booleanPreferencesKey("logado")] = true
+
+                        dataStore.data.collect{preferences->
+                            val senha = preferences[SENHA]
+                            val usuario = preferences[USUARIO]
+
+                            if(usuario == state.usuario && senha == state.senha){
+                                dataStore.edit {
+                                    it[booleanPreferencesKey("logado")] = true
+                                }
+                                viewModel.tentaLogar()
+                            }else{
+                                state.onErro(true)
+                            }
                         }
                     }
-                    viewModel.tentaLogar()
+
                 },
                 onClickCriarLogin = {
                     navController.navigate(DestinosHelloApp.FormularioLogin.rota)
@@ -68,9 +82,20 @@ fun NavGraphBuilder.loginGraph(
             val viewModel = hiltViewModel<FormularioLoginViewModel>()
             val state by viewModel.uiState.collectAsState()
 
+            val dataStore = LocalContext.current.dataStore
+            val coroutineScope = rememberCoroutineScope()
+
             FormularioLoginTela(
                 state = state,
                 onSalvar = {
+                    coroutineScope.launch {
+                        dataStore.edit { preferences ->
+                            preferences[USUARIO] =
+                                state.usuario
+                            preferences[SENHA] =
+                                state.senha
+                        }
+                    }
                     navController.navegaLimpo(DestinosHelloApp.Login.rota)
                 }
             )
