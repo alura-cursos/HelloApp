@@ -16,6 +16,9 @@ interface ContatoDao {
     @Query("SELECT * FROM Contato")
     fun buscaTodos(): Flow<List<Contato>>
 
+    @Query("SELECT * FROM Contato WHERE nome like :valor || '%'  ")
+    fun buscaParcial(valor: String): Flow<List<Contato>>
+
     @Query("SELECT * FROM Contato WHERE id = :id")
     fun buscaPorId(id: Long): Flow<Contato?>
 

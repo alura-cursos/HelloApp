@@ -31,5 +31,12 @@ class ListaContatosViewModel @Inject constructor(
         }
     }
 
+    suspend fun buscarParcialmente(valor: String) {
+        contatoDao.buscaParcial(valor).collect { contatosBuscados ->
+            _uiState.value = _uiState.value.copy(
+                contatos = contatosBuscados
+            )
+        }
+    }
 
 }
