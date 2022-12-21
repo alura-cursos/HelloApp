@@ -47,8 +47,9 @@ Após baixar o projeto, você pode abri-lo com o Android Studio. Para isso, na t
 ㅤ
 ㅤ
 
-- Solicitação de avaliação, exibida de forma aleatória de acordo com o número de vezes que o app é aberto - [Veja a solução][desafio-2]
-<img src="https://user-images.githubusercontent.com/35709152/207896527-e6faea09-430e-4921-9804-a4edcf48db04.gif" alt = "helloApp gif desafio 2" width="200">
+- Confirmar antes de deslogar - [Veja a solução][desafio-2]
+<img src="https://user-images.githubusercontent.com/35709152/208907927-2c8014b4-e0f1-44c0-997e-f764529ce5d5.gif" alt = "helloApp gif desafio confirmar deslogar" width="200">
+
 
 
 [localdate]: https://developer.android.com/reference/java/time/LocalDate
@@ -58,5 +59,5 @@ Após baixar o projeto, você pode abri-lo com o Android Studio. Para isso, na t
 [download-inicial]: https://github.com/alura-cursos/HelloApp/archive/refs/heads/projeto-inicial.zip
 [codigo-final]: https://github.com/alura-cursos/HelloApp/commits/aula-6
 [download-final]: https://github.com/alura-cursos/HelloApp/archive/refs/heads/aula-6.zip
-[desafio-1]: https://github.com/alura-cursos/HelloApp/commits/desafio-aula-3.3
-[desafio-2]: https://github.com/alura-cursos/HelloApp/commits/desafio-aula-6.2
+[desafio-1]: https://github.com/alura-cursos/HelloApp/commit/5a76d9fcb18513b6c1696a58150f73cda1c13a0d
+[desafio-2]: https://github.com/alura-cursos/HelloApp/commit/73d7bca228e2c508750cf3f82a11f46a03d0e4d9
