@@ -22,6 +22,7 @@ import br.com.alura.helloapp.R
 import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.sampleData.contatosExemplo
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
+import br.com.alura.helloapp.ui.components.CaixaDialogoDeslogar
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 
 @Composable
@@ -33,7 +34,11 @@ fun ListaContatosTela(
     onClickAbreCadastro: () -> Unit = {},
 ) {
     Scaffold(
-        topBar = { AppBarListaContatos(onClickDesloga = onClickDesloga) },
+        topBar = {
+            AppBarListaContatos(onClickDesloga = {
+                state.onMostrarCaixaDialogoDeslogarMudou(true)
+            })
+        },
         floatingActionButton = {
             FloatingActionButton(
                 backgroundColor = MaterialTheme.colors.primary,
@@ -53,6 +58,16 @@ fun ListaContatosTela(
                 }
             }
         }
+
+        if (state.mostrarCaixaDialogoDeslogar)
+            CaixaDialogoDeslogar(
+                nomeUsuario = state.nomeUsuario,
+                onClickDeslogar = {
+                    state.onMostrarCaixaDialogoDeslogarMudou(false)
+                    onClickDesloga()
+                },
+                onClickDispensar = { state.onMostrarCaixaDialogoDeslogarMudou(false) }
+            )
     }
 }
 

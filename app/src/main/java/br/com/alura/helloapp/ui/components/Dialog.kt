@@ -6,6 +6,7 @@ import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -105,6 +106,30 @@ fun CaixaDialogoImagem(
             }
         }
     )
+}
+
+@Composable
+fun CaixaDialogoDeslogar(
+    nomeUsuario: String,
+    onClickDeslogar: () -> Unit = {},
+    onClickDispensar: () -> Unit = {}
+) {
+    AlertDialog(
+        onDismissRequest = onClickDispensar,
+        confirmButton = {
+            TextButton(onClick = onClickDeslogar) {
+                Text(text = "Sair")
+            }
+
+        }, dismissButton = {
+            TextButton(onClick = onClickDispensar) {
+                Text(text = "Agora não")
+            }
+        }, title = {
+            Text(text = "Confirmar saída")
+        }, text = {
+            Text(text = "Você fez login como: $nomeUsuario, deseja sair desta conta?")
+        })
 }
 
 @Preview
