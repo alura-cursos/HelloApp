@@ -1,3 +1,6 @@
+
+![Jetpack Compose armazenamento de dados internos](https://user-images.githubusercontent.com/35709152/224780761-6773fbfc-8c1a-4354-a937-e44710f81452.png)
+
 # HelloApp
 
 
